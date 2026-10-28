@@ -30,8 +30,10 @@
     .brand__note { display: block; margin-top: 3px; color: var(--ink-soft); font: 10px/1.2 var(--font-text); }
     .demo { padding: 6px 8px; border: 1px solid var(--line-strong); color: var(--ink-soft); font: 10px/1.2 var(--font-text); letter-spacing: .08em; text-transform: uppercase; }
     .nav { display: flex; align-items: center; gap: 18px; }
-    .nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-soft); font-size: 12px; text-decoration: none; }
+    .nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-soft); font-size: 12px; white-space: nowrap; text-decoration: none; }
+    .header__end { display: flex; align-items: center; gap: clamp(10px, 2.5vw, 28px); }
     .nav a:hover, .nav a:focus-visible { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); }
+    .nav a.nav__home { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: currentColor; }
 
     .hero { position: relative; overflow: hidden; padding-block: clamp(42px, 6vw, 78px) clamp(58px, 8vw, 100px); background-image: linear-gradient(rgba(242,240,235,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(242,240,235,.055) 1px, transparent 1px); background-size: 80px 80px; }
     .hero::before { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(14,14,12,.94), rgba(14,14,12,.80) 55%, rgba(14,14,12,.94)); content: ""; pointer-events: none; }
@@ -116,11 +118,15 @@
       .section__head { grid-template-columns: minmax(110px,2fr) minmax(0,7fr); }
       .section__head > p:last-child { grid-column: 2; }
     }
+    @media (max-width:400px) {
+      .header__end { gap: 8px; }
+      .demo { display: none; }
+    }
     @media (max-width:700px) {
       .header__inner { min-height: 62px; }
       .nav { gap: 8px; }
       .nav a { font-size: 10px; }
-      .nav a:first-child { display: none; }
+      .nav a[href="#packages"], .nav a[href="#process"] { display: none; }
       .hero { padding-block: 38px 58px; }
       .hero__grid { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
       .hero__copy { display: contents; }
@@ -167,7 +173,7 @@
   <header class="header">
     <div class="ui-wrap header__inner">
       <a class="brand" href="#top"><span class="brand__mark" aria-hidden="true">С</span><span><span class="brand__name">Строительство дома</span><span class="brand__note">Демонстрационный проект</span></span></a>
-      <div style="display:flex;align-items:center;gap:clamp(10px,2.5vw,28px)"><span class="demo">Демо · компания вымышленная</span><nav class="nav" aria-label="Разделы"><a href="#packages">Комплектации</a><a href="#process">О расчёте</a></nav></div>
+      <div class="header__end"><span class="demo">Демо · компания вымышленная</span><nav class="nav" aria-label="Разделы"><a class="nav__home" href="../index.html">← Все демо</a><a href="#packages">Комплектации</a><a href="#process">О расчёте</a></nav></div>
     </div>
   </header>
 

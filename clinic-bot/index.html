@@ -31,8 +31,9 @@
     .top__right { display: flex; align-items: center; gap: clamp(12px, 2.6vw, 30px); }
     .demo-tag { padding: 6px 8px; border: 1px solid var(--line-strong); color: var(--ink-soft); font: 10px/1.2 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
     .top__nav { display: flex; align-items: center; gap: 18px; }
-    .top__nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-soft); font-size: 12px; text-decoration: none; }
+    .top__nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-soft); font-size: 12px; white-space: nowrap; text-decoration: none; }
     .top__nav a:hover { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); }
+    .top__nav a.nav__home { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: currentColor; }
 
     .hero { padding-block: clamp(38px, 6.5vw, 84px) clamp(56px, 8vw, 100px); }
     .hero__grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(350px, 7fr); gap: clamp(30px, 6vw, 82px); align-items: center; }
@@ -166,7 +167,7 @@
       .top__inner { min-height: 62px; }
       .top__nav { gap: 8px; }
       .top__nav a { font-size: 11px; }
-      .top__nav a:nth-child(2) { display: none; }
+      .top__nav a[href="#steps"], .top__nav a[href="#administrator"] { display: none; }
       .top__right { gap: 8px; }
       .hero { padding-top: 38px; }
       .hero__grid { grid-template-columns: 1fr; gap: 30px; }
@@ -213,7 +214,7 @@
       <a class="wordmark" href="#top"><span class="wordmark__symbol" aria-hidden="true">У</span><span><span class="wordmark__name">Улыбка</span><span class="wordmark__kind">стоматология · демо</span></span></a>
       <div class="top__right">
         <span class="demo-tag">Вымышленная клиника</span>
-        <nav class="top__nav" aria-label="Навигация"><a href="#steps">Сценарий</a><a href="#administrator">Администратору</a></nav>
+        <nav class="top__nav" aria-label="Навигация"><a class="nav__home" href="../index.html">← Все демо</a><a href="#steps">Сценарий</a><a href="#administrator">Администратору</a></nav>
       </div>
     </div>
   </header>
