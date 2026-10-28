@@ -29,6 +29,7 @@
     .brand__name { font-size: 12px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
     .brand__note { display: block; margin-top: 3px; color: var(--ink-soft); font: 10px/1.2 var(--font-text); }
     .demo { padding: 6px 8px; border: 1px solid var(--line-strong); color: var(--ink-soft); font: 10px/1.2 var(--font-text); letter-spacing: .08em; text-transform: uppercase; }
+    .demo__short { display: none; }
     .nav { display: flex; align-items: center; gap: 18px; }
     .nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-soft); font-size: 12px; white-space: nowrap; text-decoration: none; }
     .header__end { display: flex; align-items: center; gap: clamp(10px, 2.5vw, 28px); }
@@ -118,15 +119,19 @@
       .section__head { grid-template-columns: minmax(110px,2fr) minmax(0,7fr); }
       .section__head > p:last-child { grid-column: 2; }
     }
+    @media (max-width:440px) {
+      .demo__full { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      .demo__short { display: inline; }
+    }
     @media (max-width:400px) {
       .header__end { gap: 8px; }
-      .demo { display: none; }
     }
     @media (max-width:700px) {
-      .header__inner { min-height: 62px; }
-      .nav { gap: 8px; }
-      .nav a { font-size: 10px; }
-      .nav a[href="#packages"], .nav a[href="#process"] { display: none; }
+      .header__inner { min-height: 0; padding-block: 9px 0; flex-wrap: wrap; row-gap: 0; }
+      .brand { flex-shrink: 0; }
+      .header__end { display: contents; }
+      .nav { flex-basis: 100%; gap: 18px; }
+      .nav a { font-size: 12px; }
       .hero { padding-block: 38px 58px; }
       .hero__grid { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
       .hero__copy { display: contents; }
@@ -173,7 +178,7 @@
   <header class="header">
     <div class="ui-wrap header__inner">
       <a class="brand" href="#top"><span class="brand__mark" aria-hidden="true">С</span><span><span class="brand__name">Строительство дома</span><span class="brand__note">Демонстрационный проект</span></span></a>
-      <div class="header__end"><span class="demo">Демо · компания вымышленная</span><nav class="nav" aria-label="Разделы"><a class="nav__home" href="../index.html">← Все демо</a><a href="#packages">Комплектации</a><a href="#process">О расчёте</a></nav></div>
+      <div class="header__end"><span class="demo"><span class="demo__full">Демо · компания вымышленная</span><span class="demo__short" aria-hidden="true">Демо</span></span><nav class="nav" aria-label="Разделы"><a class="nav__home" href="../index.html">← Все демо</a><a href="#packages">Комплектации</a><a href="#process">О расчёте</a></nav></div>
     </div>
   </header>
 

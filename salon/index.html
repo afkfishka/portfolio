@@ -30,6 +30,7 @@
     .brand__name { font-family: var(--font-display); font-size: 27px; line-height: 1; }
     .brand__note { display: block; margin-top: 3px; color: var(--ink-soft); font: 10px/1.3 var(--font-text); letter-spacing: .06em; text-transform: uppercase; }
     .demo-mark { padding: 5px 8px; border: 1px solid var(--line-strong); color: var(--ink-soft); font: 10px/1.2 var(--font-text); letter-spacing: .1em; text-transform: uppercase; }
+    .demo-mark__short { display: none; }
     .nav { display: flex; align-items: center; gap: clamp(12px, 2.4vw, 30px); }
     .nav a { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; color: var(--ink-soft); font-size: 12px; white-space: nowrap; text-decoration: none; text-underline-offset: 4px; }
     .nav a:hover, .nav a:focus-visible { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); }
@@ -111,14 +112,16 @@
       .menu__row:hover { padding-left: 6px; }
       .ui-btn:hover { filter: brightness(1.06); }
     }
-    @media (max-width: 420px) {
-      .nav a[href="#services"] { display: none; }
+    @media (max-width: 380px) {
+      .demo-mark__full { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      .demo-mark__short { display: inline; }
     }
     @media (max-width: 760px) {
-      .head__inner { min-height: 64px; }
-      .nav { gap: 10px; }
-      .nav a { font-size: 11px; }
-      .nav a[href="#masters"], .nav a[href="#booking"] { display: none; }
+      .head__inner { min-height: 0; padding-block: 9px 0; flex-wrap: wrap; row-gap: 0; column-gap: 12px; }
+      .brand { flex-shrink: 0; }
+      .demo-mark { margin-left: auto; }
+      .nav { flex-basis: 100%; gap: 18px; }
+      .nav a { font-size: 12px; }
       .hero__grid, .booking__grid { grid-template-columns: 1fr; }
       .hero__grid { gap: 32px; }
       .hero h1 { max-width: 560px; font-size: clamp(4rem, 14vw, 6.2rem); }
@@ -163,7 +166,7 @@
       <a class="brand" href="#top">
         <span><span class="brand__name">Флёр</span><span class="brand__note">парикмахерский зал</span></span>
       </a>
-      <span class="demo-mark">Демо · вымышленный салон</span>
+      <span class="demo-mark"><span class="demo-mark__full">Демо · вымышленный салон</span><span class="demo-mark__short" aria-hidden="true">Демо</span></span>
       <nav class="nav" aria-label="Разделы страницы">
         <a class="nav__home" href="../index.html">← Все демо</a><a href="#services">Услуги</a><a href="#masters">Мастера</a><a href="#booking">Запись</a>
       </nav>
