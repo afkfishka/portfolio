@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="salon">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Каталог деталей — Studio</title>
+<meta name="description" content="Служебная страница: токены, типографика, состояния, компоненты четырёх арт-направлений.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Onest:wght@400;500;600&family=Unbounded:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/base.css">
+<style>
+  /* ==== Служебная обвязка каталога ==== */
+  .bar {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar__inner {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--s4); min-height: 56px; flex-wrap: wrap;
+  }
+  .bar__mark {
+    font-family: var(--font-mono); font-size: .7rem; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--ink-soft);
+  }
+  .bar__mark b { color: var(--ink); font-weight: 500; }
+
+  .switch { display: flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: var(--radius); }
+  .switch__btn {
+    min-height: 44px; padding: 8px 12px; border: 0; border-radius: var(--radius);
+    background: transparent; color: var(--ink-soft);
+    font-family: var(--font-mono); font-size: .68rem; letter-spacing: .06em;
+    text-transform: uppercase; cursor: pointer;
+    transition: color var(--dur) var(--ease-in), background-color var(--dur) var(--ease-in);
+  }
+  .switch__btn:hover { color: var(--ink); }
+  .switch__btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+  /* ==== Шапка ==== */
+  .cat-hero { padding-block: clamp(40px, 6vw, 80px) clamp(28px, 4vw, 48px); }
+  .cat-hero__grid { display: grid; grid-template-columns: 7fr 5fr; gap: clamp(24px, 4vw, 56px); align-items: end; }
+  .cat-hero__facts {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--line-strong); margin-top: var(--s6);
+  }
+  .cat-hero__facts > div { padding: var(--s4) var(--s4) var(--s4) 0; border-right: 1px solid var(--line); }
+  .cat-hero__facts > div:last-child { border-right: 0; }
+  .cat-hero__facts b { display: block; font-family: var(--font-display); font-weight: var(--display-weight); font-size: 1.6rem; line-height: 1; }
+  .cat-hero__facts span { font-size: .8rem; color: var(--ink-soft); }
+
+  /* ==== Заголовок секции ==== */
+  .sec-head {
+    display: grid; grid-template-columns: 200px 1fr; gap: clamp(16px, 3vw, 40px);
+    align-items: baseline; padding-block: var(--s4);
+    border-top: 1px solid var(--line-strong); margin-bottom: var(--s6);
+  }
+  .sec-head__num { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); }
+  .sec-head__title { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--s3); }
+  .sec-head__title h2 { font-size: clamp(1.3rem, 2.4vw, 1.9rem); }
+  .sec-head__title p { font-size: .84rem; color: var(--ink-soft); max-width: 46ch; }
+
+  /* ==== 1. Направления ==== */
+  .dirs { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .dir {
+    position: relative; display: flex; flex-direction: column; justify-content: space-between;
+    gap: var(--s5); min-height: 268px; padding: clamp(20px, 2.6vw, 32px);
+    background: var(--d-bg); color: var(--d-ink);
+    font-family: var(--d-text); border-radius: var(--d-radius);
+    overflow: hidden;
+  }
+  .dir__label {
+    font-family: var(--font-mono); font-size: .62rem; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--d-soft);
+  }
+  .dir__title { font-family: var(--d-display); font-weight: var(--d-weight); line-height: .98; letter-spacing: var(--d-track); }
+  .dir__sub { font-size: .84rem; line-height: 1.45; color: var(--d-soft); max-width: 30ch; }
+  .dir__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); }
+  .dir__spec { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .06em; color: var(--d-soft); }
+  .dir__cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: .8rem; font-weight: 500; color: var(--d-accent);
+    border-bottom: 1px solid currentColor; padding-bottom: 2px;
+  }
+
+  .dir--salon { --d-bg:#F4F0E8; --d-ink:#14100C; --d-soft:#57503F; --d-accent:#A4552F; --d-text:"Onest",sans-serif; --d-display:"Cormorant Garamond",serif; --d-weight:400; --d-track:-.01em; --d-radius:2px; }
+  .dir--salon .dir__title { font-size: clamp(2rem, 3.6vw, 2.9rem); font-style: italic; }
+  .dir--salon .dir__rule { height: 1px; background: var(--d-accent); margin-block: var(--s3) var(--s4); }
+
+  .dir--clinic { --d-bg:#F1F4F1; --d-ink:#0C1512; --d-soft:#46564F; --d-accent:#1F6B4A; --d-text:"Onest",sans-serif; --d-display:"Onest",sans-serif; --d-weight:600; --d-track:-.028em; --d-radius:4px; }
+  .dir--clinic .dir__title { font-size: clamp(1.6rem, 2.8vw, 2.2rem); }
+  .dir--clinic .dir__meta {
+    display: flex; gap: 10px; flex-wrap: wrap; font-family: var(--font-mono);
+    font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--d-accent);
+    padding-bottom: var(--s3); border-bottom: 1px solid var(--d-accent);
+  }
+
+  .dir--build { --d-bg:#0E0E0C; --d-ink:#F2F0EB; --d-soft:#A7A49B; --d-accent:#FF4D00; --d-text:"Onest",sans-serif; --d-display:"Unbounded",sans-serif; --d-weight:500; --d-track:-.035em; --d-radius:0px; }
+  .dir--build .dir__title { font-size: clamp(1.7rem, 3.2vw, 2.4rem); text-transform: uppercase; }
+  .dir--build .dir__bar { height: 3px; width: 64px; background: var(--d-accent); margin-bottom: var(--s4); }
+  .dir--build .dir__spec { color: var(--d-accent); }
+
+  .dir--brand { --d-bg:#F6F4EE; --d-ink:#14120F; --d-soft:#55503F; --d-accent:#2B4BFF; --d-text:"Onest",sans-serif; --d-display:"Unbounded",sans-serif; --d-weight:600; --d-track:-.04em; --d-radius:0px; }
+  .dir--brand .dir__title { font-size: clamp(1.9rem, 3.6vw, 2.7rem); }
+  .dir--brand .dir__title em { font-style: normal; box-shadow: inset 0 -0.16em 0 var(--d-accent); }
+
+  /* ==== 2. Типографика ==== */
+  .scale { display: grid; gap: 0; }
+  .scale__row {
+    display: grid; grid-template-columns: 92px 1fr; gap: var(--s4); align-items: baseline;
+    padding-block: var(--s3); border-bottom: 1px solid var(--line);
+  }
+  .scale__row:first-child { border-top: 1px solid var(--line); }
+  .scale__px { font-family: var(--font-mono); font-size: .7rem; color: var(--ink-soft); }
+  .scale__sample { font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); line-height: 1.05; }
+
+  .pairs { display: grid; gap: 0; margin-top: var(--s6); border-top: 1px solid var(--line); }
+  .pair {
+    display: grid; grid-template-columns: 1fr 1fr 180px; gap: var(--s4);
+    align-items: baseline; padding-block: var(--s4); border-bottom: 1px solid var(--line);
+  }
+  .pair__sample { font-size: clamp(1.3rem, 2.4vw, 1.8rem); line-height: 1.1; }
+  .pair__text { font-size: .85rem; color: var(--ink-soft); }
+  .pair__meta { font-family: var(--font-mono); font-size: .68rem; color: var(--ink-soft); text-align: right; }
+
+  /* ==== 3. Цвет ==== */
+  .pals { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2.4vw, 28px); }
+  .pal { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .pal__head {
+    display: flex; align-items: baseline; justify-content: space-between; gap: var(--s3);
+    padding: var(--s3) var(--s4); border-bottom: 1px solid var(--line);
+  }
+  .pal__name { font-size: .88rem; font-weight: 500; }
+  .pal__tag { font-family: var(--font-mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+  .pal__swatches { display: grid; grid-template-columns: repeat(5, 1fr); }
+  .swatch { height: 76px; display: flex; flex-direction: column; justify-content: flex-end; padding: 8px; gap: 1px; }
+  .swatch b { font-family: var(--font-mono); font-size: .68rem; font-weight: 500; letter-spacing: .02em; }
+  .swatch span { font-family: var(--font-mono); font-size: .66rem; opacity: .82; }
+  .pal__ratio {
+    display: flex; flex-wrap: wrap; gap: var(--s4);
+    padding: var(--s3) var(--s4); border-top: 1px solid var(--line);
+    font-family: var(--font-mono); font-size: .66rem; color: var(--ink-soft);
+  }
+  .pal__ratio b { color: var(--ink); font-weight: 500; }
+
+  /* ==== 4. Кнопки ==== */
+  .btn-row { display: flex; flex-wrap: wrap; gap: var(--s3); align-items: center; }
+  .states { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .state-row {
+    display: grid; grid-template-columns: 140px 1fr 1fr 1fr;
+    gap: var(--s4); align-items: center;
+    padding: var(--s4); background: var(--bg);
+  }
+  .state-row__name { font-family: var(--font-mono); font-size: .66rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+  .state-row__note { font-size: .74rem; color: var(--ink-soft); }
+
+  /* ==== 5. Поля ==== */
+  .forms { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 3vw, 40px); }
+  .forms__col { min-width: 0; }
+
+  /* ==== 6. Прайс ==== */
+  .menu-demo { max-width: 620px; }
+  .steps-demo { list-style: none; display: grid; gap: 0; }
+  .steps-demo li {
+    display: grid; grid-template-columns: 64px 1fr; gap: var(--s4);
+    padding-block: var(--s4); border-top: 1px solid var(--line); align-items: baseline;
+  }
+  .steps-demo li:last-child { border-bottom: 1px solid var(--line); }
+  .steps-demo b { font-family: var(--font-mono); font-size: .74rem; color: var(--accent); }
+  .steps-demo p { font-size: .86rem; color: var(--ink-soft); margin-top: 2px; }
+  .table-wrap { overflow-x: auto; }
+  .menu-column { grid-column: 1 / span 6; min-width: 0; }
+  .steps-column { grid-column: 8 / span 5; min-width: 0; }
+  .table-column { grid-column: 1 / -1; min-width: 0; margin-top: var(--s6); }
+
+  /* ==== 7. Блоки ==== */
+  .blocks { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(14px, 2vw, 24px); }
+  .quote { border-left: 2px solid var(--accent); padding-left: var(--s4); }
+  .quote p { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(1.15rem, 2vw, 1.5rem); line-height: 1.25; letter-spacing: var(--display-tracking); }
+  .quote cite { display: block; margin-top: var(--s3); font-style: normal; font-size: .78rem; color: var(--ink-soft); }
+
+  /* ==== 8. Фото ==== */
+  .photos { display: grid; grid-template-columns: 4fr 8fr; gap: clamp(14px, 2vw, 24px); align-items: start; }
+  .photos .ui-photo-frame > * { height: 100%; }
+
+  /* ==== 9. Матрица ==== */
+  .matrix { width: 100%; border-collapse: collapse; font-size: .84rem; }
+  .matrix th, .matrix td { text-align: left; padding: var(--s3) var(--s3) var(--s3) 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .matrix thead th { font-family: var(--font-mono); font-size: .64rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); border-bottom: 1px solid var(--line-strong); }
+  .matrix td:first-child { font-family: var(--font-mono); font-size: .74rem; white-space: nowrap; }
+
+  /* ==== 10. Движение ==== */
+  .motion { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(14px, 2vw, 24px); }
+
+  /* ==== Подвал ==== */
+  .foot { padding-block: var(--s8) var(--s7); border-top: 1px solid var(--line-strong); margin-top: var(--s7); }
+  .foot__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 4vw, 56px); }
+  .foot__list { list-style: none; display: grid; gap: var(--s2); font-size: .86rem; color: var(--ink-soft); }
+  .foot__list b { color: var(--ink); font-weight: 500; }
+
+  @media (max-width: 980px) {
+    .cat-hero__grid { grid-template-columns: 1fr; }
+    .dirs { grid-template-columns: 1fr; }
+    .pals { grid-template-columns: 1fr; }
+    .blocks, .motion { grid-template-columns: 1fr 1fr; }
+    .forms { grid-template-columns: 1fr; }
+    .photos { grid-template-columns: 1fr; }
+    .pair { grid-template-columns: 1fr 1fr; }
+    .pair__meta { grid-column: 1 / -1; text-align: left; }
+    .state-row { grid-template-columns: 120px 1fr 1fr; }
+    .state-row__note { display: none; }
+    .menu-column { grid-column: 1 / span 3; }
+    .steps-column { grid-column: 4 / span 3; }
+    .table-column { grid-column: 1 / -1; }
+  }
+
+  @media (max-width: 620px) {
+    .sec-head { grid-template-columns: 1fr; gap: var(--s2); }
+    .cat-hero__facts { grid-template-columns: 1fr; }
+    .cat-hero__facts > div { border-right: 0; border-bottom: 1px solid var(--line); }
+    .cat-hero__facts > div:last-child { border-bottom: 0; }
+    .blocks, .motion { grid-template-columns: 1fr; }
+    .pair { grid-template-columns: 1fr; }
+    .state-row { grid-template-columns: 1fr; gap: var(--s2); }
+    .bar__inner { min-height: 0; padding-block: var(--s2); }
+    .switch { width: 100%; overflow-x: auto; }
+    .switch__btn { flex: 1 0 auto; }
+    .menu-column, .steps-column, .table-column { grid-column: 1 / -1; }
+  }
+</style>
+</head>
+<body>
+<a class="ui-skip" href="#main">Перейти к содержимому</a>
+
+<header class="bar">
+  <div class="ui-wrap bar__inner">
+    <p class="bar__mark"><b>Studio</b> · каталог деталей · служебная страница</p>
+    <div class="switch" role="group" aria-label="Арт-направление">
+      <button class="switch__btn" type="button" data-theme-btn="salon" aria-pressed="true">Флёр</button>
+      <button class="switch__btn" type="button" data-theme-btn="clinic" aria-pressed="false">Улыбка</button>
+      <button class="switch__btn" type="button" data-theme-btn="build" aria-pressed="false">СтройДом</button>
+      <button class="switch__btn" type="button" data-theme-btn="brand" aria-pressed="false">Портфолио</button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============ Шапка ============ -->
+  <section class="cat-hero">
+    <div class="ui-wrap">
+      <div class="cat-hero__grid">
+        <div>
+          <p class="ui-label">Шаг 1 · библиотека решений</p>
+          <h1 class="ui-h1" style="margin-top:var(--s4)">Детали, из которых<br>собираются страницы</h1>
+        </div>
+        <div>
+          <p class="ui-lead">Токены, типографика, состояния и компоненты четырёх арт-направлений. Это не сайт, а склад: отсюда берётся готовое, а не изобретается заново.</p>
+          <p class="ui-caption ui-caption--note">Переключите направление в правом верхнем углу — вся страница перекрасится. Так видно, что четыре направления отличаются не только цветом.</p>
+        </div>
+      </div>
+
+      <div class="cat-hero__facts">
+        <div><b>4</b><span>арт-направления, разных по характеру</span></div>
+        <div><b>9</b><span>состояний в системе компонентов</span></div>
+        <div><b>0</b><span>зависимостей: CSS и JS без сборки</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 01. Направления ============ -->
+  <section class="ui-section--tight" id="directions">
+    <div class="ui-wrap">
+      <div class="sec-head">
+        <p class="sec-head__num">01 — Направления</p>
+        <div class="sec-head__title">
+          <h2 class="ui-h2">Четыре характера</h2>
+          <p>Один шаблон с разными цветами — не направление. Здесь отличаются шрифт, плотность, радиус и способ подачи.</p>
+        </div>
+      </div>
+
+      <div class="dirs">
+        <article class="dir dir--salon">
+          <div>
+            <p class="dir__label">Тихая роскошь · beauty</p>
+            <h3 class="dir__title" style="margin-top:var(--s3)">Стрижка —<br>это разговор</h3>
+            <div class="dir__rule"></div>
+            <p class="dir__sub">Cormorant, бумага, глина. Воздух вместо карточек, прайс как меню.</p>
+          </div>
+          <div class="dir__foot">
+            <span class="dir__spec">2 px · 12 колонок · сериф</span>
+            <span class="dir__cta">Записаться</span>
+          </div>
+        </article>
+
+        <article class="dir dir--clinic">
+          <div>
+            <div class="dir__meta"><span>03 экрана</span><span>24/7</span><span>5 минут</span></div>
+            <h3 class="dir__title" style="margin-top:var(--s4)">Запись, которая<br>не теряется</h3>
+            <p class="dir__sub" style="margin-top:var(--s3)">Onest и моноширинные цифры. Спецификация вместо обещаний.</p>
+          </div>
+          <div class="dir__foot">
+            <span class="dir__spec">4 px · 7/5 · гротеск</span>
+            <span class="dir__cta">Пройти запись</span>
+          </div>
+        </article>
+
+        <article class="dir dir--build">
+          <div>
+            <div class="dir__bar"></div>
+            <p class="dir__label">Индустриальная честность · стройка</p>
+            <h3 class="dir__title" style="margin-top:var(--s3)">Смета<br>за один день</h3>
+            <p class="dir__sub" style="margin-top:var(--s3)">Unbounded капсом, графит и сигнальный. Никаких теней и скруглений.</p>
+          </div>
+          <div class="dir__foot">
+            <span class="dir__spec">0 px · 7/5 · таблица</span>
+            <span class="dir__cta">Рассчитать</span>
+          </div>
+        </article>
+
+        <article class="dir dir--brand">
+          <div>
+            <p class="dir__label">Редакционный брутал · портфолио</p>
+            <h3 class="dir__title" style="margin-top:var(--s3)">Три демо.<br><em>Кнопки работают</em></h3>
+            <p class="dir__sub" style="margin-top:var(--s3)">Гигантская типографика, электрик по бумаге, работы списком.</p>
+          </div>
+          <div class="dir__foot">
+            <span class="dir__spec">0 px · список · Unbounded</span>
+            <span class="dir__cta">Смотреть →</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02. Типографика ============ -->
+  <section class="ui-section--tight" id="type">
+    <div class="ui-wrap">
+      <div class="sec-head">
+        <p class="sec-head__num">02 — Типографика</p>
+        <div class="sec-head__title">
+          <h2 class="ui-h2">Пять ступеней, не двадцать</h2>
+          <p>Крупные прыжки между кеглями. Каталог грузит четыре семейства — в клиентской странице их не больше двух.</p>
+        </div>
+      </div>
+
+      <div class="scale">
+        <div class="scale__row"><span class="scale__px">80 / 1.0</span><span class="scale__sample" style="font-size:clamp(2rem,5vw,4rem)">Стрижка и укладка</span></div>
+        <div class="scale__row"><span class="scale__px">48 / 1.04</span><span class="scale__sample" style="font-size:clamp(1.6rem,3.4vw,2.6rem)">Ближайшее окно — сегодня</span></div>
+        <div class="scale__row"><span class="scale__px">32 / 1.1</span><span class="scale__sample" style="font-size:clamp(1.3rem,2.4vw,1.9rem)">Прайс без звонков и уточнений</span></div>
+        <div class="scale__row"><span class="scale__px">20 / 1.4</span><span class="scale__sample" style="font-size:1.25rem;font-family:var(--font-text);font-weight:500;letter-spacing:-.01em">Мастера, окна, цены — на одной странице</span></div>
+        <div class="scale__row"><span class="scale__px">16 / 1.6</span><span class="scale__sample" style="font-size:1rem;font-family:var(--font-text);font-weight:400;letter-spacing:0;line-height:1.6">Основной текст: 16–18 px, ширина строки 58–72 символа. Длинные абзацы не должны растягиваться на весь экран.</span></div>
+        <div class="scale__row"><span class="scale__px">12 / 1.3</span><span class="scale__sample" style="font-size:.75rem;font-family:var(--font-mono);letter-spacing:.1em;text-transform:uppercase;line-height:1.3">Служебная подпись · mono · капс</span></div>
+      </div>
+
+      <div class="pairs">
+        <div class="pair">
+          <span class="pair__sample" style="font-family:'Cormorant Garamond',serif">Тихая роскошь</span>
+          <span class="pair__text" style="font-family:'Onest',sans-serif">Текст набран Onest: нейтрально, с родной кириллицей.</span>
+          <span class="pair__meta">Cormorant / Onest</span>
+        </div>
+        <div class="pair">
+          <span class="pair__sample" style="font-family:'Onest',sans-serif;font-weight:600;letter-spacing:-.028em">Клиническая точность</span>
+          <span class="pair__text" style="font-family:'Onest',sans-serif">Одно семейство в двух весах — строго и без украшений.</span>
+          <span class="pair__meta">Onest 600 / Onest 400</span>
+        </div>
+        <div class="pair">
+          <span class="pair__sample" style="font-family:'Unbounded',sans-serif;font-weight:500;letter-spacing:-.035em;text-transform:uppercase;font-size:clamp(1rem,1.8vw,1.4rem)">Индустриальная честность</span>
+          <span class="pair__text" style="font-family:'Onest',sans-serif">Дисплей капсом, цифры — моноширинным.</span>
+          <span class="pair__meta">Unbounded / Onest / JetBrains</span>
+        </div>
+        <div class="pair">
+          <span class="pair__sample" style="font-family:'Unbounded',sans-serif;font-weight:600;letter-spacing:-.04em">Редакционный брутал</span>
+          <span class="pair__text" style="font-family:'Onest',sans-serif">Заголовок спорит с текстом по весу — так и задумано.</span>
+          <span class="pair__meta">Unbounded 600 / Onest</span>
+        </div>
+      </div>
+
+      <p class="ui-caption ui-caption--note" style="margin-top:var(--s5)">Заголовки: отрицательный трекинг −0.02…−0.04em, межстрочный 0.96–1.05. Текст: 16–18 px, 1.55, ширина до 62ch. Цены и таблицы — <span class="ui-mono">tabular-nums</span>, иначе цифры «пляшут».</p>
+    </div>
+  </section>
+
+  <!-- ============ 03. Цвет ============ -->
+  <section class="ui-section--tight" id="color">
+    <div class="ui-wrap">
+      <div class="sec-head">
+        <p class="sec-head__num">03 — Цвет</p>
+        <div class="sec-head__title">
+          <h2 class="ui-h2">Пять красок, один акцент</h2>
+          <p>Контраст посчитан кодом, а не на глаз. Текст ≥ 4.5:1, крупный акцент ≥ 3:1.</p>
+        </div>
+      </div>
+
+      <div class="pals">
+        <article class="pal" data-pal="Флёр" data-bg="#F4F0E8" data-ink="#14100C" data-soft="#57503F" data-accent="#A4552F" data-onaccent="#FDF9F2">
+          <div class="pal__head"><span class="pal__name">Флёр — тихая роскошь</span><span class="pal__tag">salon</span></div>
+          <div class="pal__swatches">
+            <span class="swatch" style="background:#F4F0E8;color:#14100C"><b>F4F0E8</b><span>фон</span></span>
+            <span class="swatch" style="background:#EDE7DB;color:#14100C"><b>EDE7DB</b><span>подложка</span></span>
+            <span class="swatch" style="background:#14100C;color:#F4F0E8"><b>14100C</b><span>текст</span></span>
+            <span class="swatch" style="background:#57503F;color:#F4F0E8"><b>57503F</b><span>приглуш.</span></span>
+            <span class="swatch" style="background:#A4552F;color:#FDF9F2"><b>A4552F</b><span>акцент</span></span>
+          </div>
+          <p class="pal__ratio"><span>текст <b data-r="ink">—</b></span><span>приглушённый <b data-r="soft">—</b></span><span>кнопка <b data-r="btn">—</b></span></p>
+        </article>
+
+        <article class="pal" data-pal="Улыбка" data-bg="#F1F4F1" data-ink="#0C1512" data-soft="#46564F" data-accent="#1F6B4A" data-onaccent="#F4FAF6">
+          <div class="pal__head"><span class="pal__name">Улыбка — клиническая точность</span><span class="pal__tag">clinic</span></div>
+          <div class="pal__swatches">
+            <span class="swatch" style="background:#F1F4F1;color:#0C1512"><b>F1F4F1</b><span>фон</span></span>
+            <span class="swatch" style="background:#E4EBE6;color:#0C1512"><b>E4EBE6</b><span>подложка</span></span>
+            <span class="swatch" style="background:#0C1512;color:#F1F4F1"><b>0C1512</b><span>текст</span></span>
+            <span class="swatch" style="background:#46564F;color:#F1F4F1"><b>46564F</b><span>приглуш.</span></span>
+            <span class="swatch" style="background:#1F6B4A;color:#F4FAF6"><b>1F6B4A</b><span>акцент</span></span>
+          </div>
+          <p class="pal__ratio"><span>текст <b data-r="ink">—</b></span><span>приглушённый <b data-r="soft">—</b></span><span>кнопка <b data-r="btn">—</b></span></p>
+        </article>
+
+        <article class="pal" data-pal="СтройДом" data-bg="#0E0E0C" data-ink="#F2F0EB" data-soft="#A7A49B" data-accent="#FF4D00" data-onaccent="#120905">
+          <div class="pal__head"><span class="pal__name">СтройДом — индустриальная честность</span><span class="pal__tag">build</span></div>
+          <div class="pal__swatches">
+            <span class="swatch" style="background:#0E0E0C;color:#F2F0EB"><b>0E0E0C</b><span>фон</span></span>
+            <span class="swatch" style="background:#171715;color:#F2F0EB"><b>171715</b><span>подложка</span></span>
+            <span class="swatch" style="background:#F2F0EB;color:#0E0E0C"><b>F2F0EB</b><span>текст</span></span>
+            <span class="swatch" style="background:#A7A49B;color:#0E0E0C"><b>A7A49B</b><span>приглуш.</span></span>
+            <span class="swatch" style="background:#FF4D00;color:#120905"><b>FF4D00</b><span>акцент</span></span>
+          </div>
+          <p class="pal__ratio"><span>текст <b data-r="ink">—</b></span><span>приглушённый <b data-r="soft">—</b></span><span>кнопка <b data-r="btn">—</b></span></p>
+        </article>
+
+        <article class="pal" data-pal="Портфолио" data-bg="#F6F4EE" data-ink="#14120F" data-soft="#55503F" data-accent="#2B4BFF" data-onaccent="#FFFFFF">
+          <div class="pal__head"><span class="pal__name">Портфолио — редакционный брутал</span><span class="pal__tag">brand</span></div>
+          <div class="pal__swatches">
+            <span class="swatch" style="background:#F6F4EE;color:#14120F"><b>F6F4EE</b><span>фон</span></span>
+            <span class="swatch" style="background:#ECE8DE;color:#14120F"><b>ECE8DE</b><span>подложка</span></span>
+            <span class="swatch" style="background:#14120F;color:#F6F4EE"><b>14120F</b><span>текст</span></span>
+            <span class="swatch" style="background:#55503F;color:#F6F4EE"><b>55503F</b><span>приглуш.</span></span>
+            <span class="swatch" style="background:#2B4BFF;color:#FFFFFF"><b>2B4BFF</b><span>акцент</span></span>
+          </div>
+          <p class="pal__ratio"><span>текст <b data-r="ink">—</b></span><span>приглушённый <b data-r="soft">—</b></span><span>кнопка <b data-r="btn">—</b></span></p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04. Кнопки ============ -->
+  <section class="ui-section--tight" id="buttons">
+    <div class="ui-wrap">
+      <div class="sec-head">
+        <p class="sec-head__num">04 — Кнопки</p>
+        <div class="sec-head__title">
+          <h2 class="ui-h2">Шесть состояний, а не два</h2>
+          <p>Hover есть только у мыши. Фокус должен быть виден с клавиатуры. Загрузка не меняет ширину — иначе страница дёргается.</p>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-bottom:var(--s6)">
+        <button class="ui-btn ui-btn--solid" type="button"><span class="ui-btn__label">Записаться на 18:30</span></button>
+        <button class="ui-btn" type="button"><span class="ui-btn__label">Смотреть прайс</span></button>
+        <button class="ui-btn ui-btn--ghost" type="button"><span class="ui-btn__label">Все окна →</span></button>
+        <button class="ui-btn ui-btn--sm" type="button"><span class="ui-btn__label">Как это работает</span></button>
+      </div>
+
+      <div class="states">
+        <div class="state-row">
+          <span class="state-row__name">default</span>
+          <button class="ui-btn ui-btn--solid" type="button"><span class="ui-btn__label">Записаться</span></button>
+          <button class="ui-btn" type="button"><span class="ui-btn__label">Записаться</span></button>
+          <span class="state-row__note">Основное действие — сплошная заливка акцентом. Второе — контур.</span>
+        </div>
+        <div class="state-row">
+          <span class="state-row__name">hover</span>
+          <button class="ui-btn ui-btn--solid is-hover" type="button"><span class="ui-btn__label">Записаться</span></button>
+          <button class="ui-btn is-hover" type="button"><span class="ui-btn__label">Записаться</span></button>
+          <span class="state-row__note">Подъём на 1 px, яркость +6%. Только при <span class="ui-mono">hover: hover</span>.</span>
+        </div>
+        <div class="state-row">
+          <span class="state-row__name">active</span>
+          <button class="ui-btn ui-btn--solid is-active" type="button"><span class="ui-btn__label">Записаться</span></button>
+          <button class="ui-btn is-active" type="button"><span class="ui-btn__label">Записаться</span></button>
+          <span class="state-row__note">Вниз на 1 px и затемнение — как физическое нажатие.</span>
+        </div>
+        <div class="state-row">
+          <span class="state-row__name">focus</span>
+          <button class="ui-btn ui-btn--solid is-focus" type="button"><span class="ui-btn__label">Записаться</span></button>
+          <button class="ui-btn is-focus" type="button"><span class="ui-btn__label">Записаться</span></button>
+          <span class="state-row__note">Кольцо 2 px с отступом 2 px. Никогда <span class="ui-mono">outline: none</span> без замены.</span>
+        </div>
+        <div class="state-row">
+          <span class="state-row__name">disabled</span>
+          <button class="ui-btn ui-btn--solid" type="button" disabled><span class="ui-btn__label">Записаться</span></button>
+          <button class="ui-btn" type="button" disabled><span class="ui-btn__label">Записаться</span></button>
+          <span class="state-row__note">Прозрачность 38%, курсор <span class="ui-mono">not-allowed</span>. Причина должна быть написана рядом.</span>
+        </div>
+        <div class="state-row">
+          <span class="state-row__name">loading</span>
+          <button class="ui-btn ui-btn--solid is-loading" type="button"><span class="ui-btn__label">Записаться</span><span class="ui-btn__spin" aria-hidden="true"></span></button>
+          <button class="ui-btn is-loading" type="button"><span class="ui-btn__label">Записаться</span><span class="ui-btn__spin" aria-hidden="true"></span></button>
+          <span class="state-row__note">Текст скрыт, но место занимает — ширина не меняется.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05. Поля ============ -->
+  <section class="ui-section--tight" id="forms">
+    <div class="ui-wrap">
+      <div class="sec-head">
+        <p class="sec-head__num">05 — Поля</p>
+        <div class="sec-head__title">
+          <h2 class="ui-h2">Ошибка объясняет, что делать</h2>
+          <p>Подпись всегда снаружи поля. Ошибка — текстом рядом, не только красной рамкой.</p>
+        </div>
+      </div>
+
+      <div class="forms">
+        <div class="forms__col">
+          <div class="ui-field">
+            <label class="ui-field__label" for="f-name">Как вас зовут</label>
+            <input class="ui-input" id="f-name" type="text" placeholder="Анна" autocomplete="name">
+            <span class="ui-field__hint">Так к вам обратятся в подтверждении</span>
+          </div>
+
+          <div class="ui-field">
+            <label class="ui-field__label" for="f-phone">Телефон</label>
+            <input class="ui-input" id="f-phone" type="tel" value="+7 999" aria-invalid="true" aria-describedby="f-phone-err" autocomplete="tel">
+            <span class="ui-field__error" id="f-phone-err">Введите телефон целиком: +7 999 123-45-67</span>
+          </div>
+
+          <label class="ui-check" for="f-agree">
+            <input id="f-agree" type="checkbox" checked>
+            <span>Согласен на обработку данных — только для записи, без рассылок.</span>
+          </label>
+        </div>
+
+        <div class="forms__col">
+          <div class="ui-field">
+            <label class="ui-field__label" for="f-time">Удобное время</label>
+            <select class="ui-input" id="f-time">
+              <option>Сегодня, 18:30</option>
+              <option>Сегодня, 19:45</option>
+              <option>Завтра, 10:00</option>
+            </select>
+            <span class="ui-field__hint">Ближайшее окно держим 15 минут</span>
+          </div>
+
+          <div class="ui-field">
+            <label class="ui-field__label" for="f-ok">Подтверждение</label>
+            <input class="ui-input" id="f-ok" type="text" value="Записали на 18:30" readonly>
+            <span class="ui-field__ok">Напомним за 2 часа — в Telegram</span>
+          </div>
+
+          <button class="ui-btn ui-btn--solid ui-btn--wide" type="button" style="margin-top:var(--s2)"><span class="ui-btn__label">Записаться на 18:30</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 06. Списки ============ -->
+  <section class="ui-section--tight" id="lists">
+    <div class="ui-wrap">
+      <div class="sec-head">
+        <p class="sec-head__num">06 — Списки и таблицы</p>
+        <div class="sec-head__title">
+          <h2 class="ui-h2">Прайс как меню, а не три карточки</h2>
+          <p>Таблица честнее карточек с галочками: видно, что входит, а что нет.</p>
+        </div>
+      </div>
+
+      <div class="ui-grid">
+        <div class="menu-column">
+          <p class="ui-label" style="margin-bottom:var(--s3)">Прайс-меню</p>
+          <ul class="ui-menu menu-demo">
+            <li class="ui-menu__row">
+              <span class="ui-menu__name">Стрижка женская<span class="ui-menu__note">мытьё, стрижка, укладка · 60 мин</span></span>
+              <span class="ui-menu__dots"></span>
+              <span class="ui-menu__price">2 500 ₽</span>
+            </li>
+            <li class="ui-menu__row">
+              <span class="ui-menu__name">Окрашивание в один тон<span class="ui-menu__note">без осветления · 120 мин</span></span>
+              <span class="ui-menu__dots"></span>
+              <span class="ui-menu__price">4 800 ₽</span>
+            </li>
+            <li class="ui-menu__row">
+              <span class="ui-menu__name">Уход после окрашивания<span class="ui-menu__note">маска, массаж головы · 40 мин</span></span>
+              <span class="ui-menu__dots"></span>
+              <span class="ui-menu__price">1 900 ₽</span>
+            </li>
+            <li class="ui-menu__row">
+              <span class="ui-menu__name">Мужская стрижка<span class="ui-menu__note">машинка и ножницы · 40 мин</span></span>
+              <span class="ui-menu__dots"></span>
+              <span class="ui-menu__price">1 600 ₽</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="steps-column">
+          <p class="ui-label" style="margin-bottom:var(--s3)">Этапы</p>
+          <ol class="steps-demo">
+            <li><b>01</b><div><h3 class="ui-h3">Выбираете окно</h3><p>Свободное время видно сразу, без звонка.</p></div></li>
+            <li><b>02</b><div><h3 class="ui-h3">Оставляете имя и телефон</h3><p>Два поля. Подтверждение приходит в Telegram.</p></div></li>
+            <li><b>03</b><div><h3 class="ui-h3">Приходите</h3><p>Напоминание за 2 часа, перенос — одной кнопкой.</p></div></li>
+          </ol>
+        </div>
+
+        <div class="table-column">
+          <p class="ui-label" style="margin-bottom:var(--s3)">Таблица характеристик</p>
+          <div class="table-wrap">
+            <table class="ui-table">
+              <thead>
+                <tr><th scope="col">Пакет</th><th scope="col">Что входит</th><th scope="col">Срок</th><th scope="col" class="num">Цена</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Визитка</td><td>Одна страница, три работы, кнопка связи</td><td>3–5 дней</td><td class="num">—</td></tr>
+                <tr><td>Бот записи</td><td>Сценарий, проверка телефона, уведомления</td><td>3–5 дней</td><td class="num">—</td></tr>
+                <tr><td>Лендинг</td><td>Страница услуги, калькулятор, формы</td><td>5–7 дней</td><td class="num">—</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="ui-caption ui-caption--note">Цены намеренно не указаны: это образец компонента, а не коммерческое предложение.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 07. Блоки ============ -->
+  <section class="ui-section--tight" id="blocks">
+    <div class="ui-wrap">
+      <div class="sec-head">
+        <p class="sec-head__num">07 — Блоки</p>
+        <div class="sec-head__title">
+          <h2 class="ui-h2">Цифра, цитата, предупреждение</h2>
+          <p>Три формы, которые закрывают почти весь контент: доказательство, голос клиента, честная оговорка.</p>
+        </div>
+      </div>
+
+      <div class="blocks">
+        <div class="ui-card">
+          <div class="ui-metric">
+            <span class="ui-metric__num">18:30</span>
+            <span class="ui-metric__cap">Ближайшее свободное окно сегодня</span>
+          </div>
+          <hr class="ui-rule" style="margin-block:var(--s4)">
+          <p class="ui-text" style="font-size:.86rem;color:var(--ink-soft)">Конкретное время убеждает лучше слова «запишитесь».</p>
+        </div>
+
+        <div class="ui-card ui-card--plain">
+          <blockquote class="quote">
+            <p>«Записалась за минуту, пока ехала в метро»</p>
+            <cite>Клиент, которого не существует. Демо-цитата.</cite>
+          </blockquote>
+          <p class="ui-caption ui-caption--note" style="margin-top:var(--s4)">Так выглядит цитата. В демо подпись всегда говорит, что человек вымышлен.</p>
+        </div>
+
+        <div class="ui-card ui-card--plain">
+          <div class="ui-notice">
+            <strong style="color:var(--ink);font-weight:500">Это демонстрационный проект</strong>
+            <span>Компания «Флёр» вымышлена, цены и отзывы — пример. Показываем, как будет выглядеть ваш сайт.</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:var(--s4)">
+            <span class="ui-tag">демо</span>
+            <span class="ui-tag">иллюстрация</span>
+            <span class="ui-demo-tag">демо</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 08. Фото ============ -->
+  <section class="ui-section--tight" id="photo">
+    <div class="ui-wrap">
+      <div class="sec-head">
+        <p class="sec-head__num">08 — Фотографии</p>
+        <div class="sec-head__title">
+          <h2 class="ui-h2">Рамка, кадр, подпись</h2>
+          <p>Пропорция задаётся контейнером, картинка не растягивается. Пока кадра нет — честная штриховка, а не серая заглушка.</p>
+        </div>
+      </div>
+
+      <div class="photos">
+        <figure style="margin:0">
+          <div class="ui-photo-frame" style="aspect-ratio:4/3">
+            <div class="ui-photo-empty">место под фото · 4:3</div>
+          </div>
+          <figcaption class="ui-caption">зал на Никитской · иллюстрация</figcaption>
+        </figure>
+
+        <figure style="margin:0">
+          <div class="ui-photo-frame" style="aspect-ratio:16/9">
+            <div class="ui-photo-empty">место под фото · 16:9</div>
+          </div>
+          <figcaption class="ui-caption">стойка регистрации · иллюстрация</figcaption>
+          <p class="ui-caption ui-caption--note">Короткая подпись — капсом и моноширинным. Всё, что длиннее четырёх слов, — обычным регистром: капсом длинный текст нечитаем.</p>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 09. Матрица состояний ============ -->
+  <section class="ui-section--tight" id="matrix">
+    <div class="ui-wrap">
+      <div class="sec-head">
+        <p class="sec-head__num">09 — Матрица</p>
+        <div class="sec-head__title">
+          <h2 class="ui-h2">Девять состояний компонента</h2>
+          <p>Если нарисованы два, остальные всё равно появятся в коде — но случайно.</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="matrix">
+          <thead>
+            <tr><th scope="col">Состояние</th><th scope="col">Что должно быть</th><th scope="col">Где проверять</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>default</td><td>Обычный вид, без эффектов</td><td>Кнопки, поля, строки прайса</td></tr>
+            <tr><td>hover</td><td>Подъём 1 px или смена фона, 120–180 ms</td><td>Только <span class="ui-mono">@media (hover: hover)</span></td></tr>
+            <tr><td>active</td><td>Сдвиг вниз 1 px, затемнение 6%</td><td>Нажатие мышью и пальцем</td></tr>
+            <tr><td>focus-visible</td><td>Кольцо 2 px с отступом 2 px</td><td>Проход Tab</td></tr>
+            <tr><td>disabled</td><td>Прозрачность 38%, причина рядом</td><td>Форма до заполнения</td></tr>
+            <tr><td>loading</td><td>Ширина не меняется, спиннер внутри</td><td>Отправка формы</td></tr>
+            <tr><td>error</td><td>Текст ошибки + <span class="ui-mono">aria-describedby</span></td><td>Пустой телефон</td></tr>
+            <tr><td>success</td><td>Спокойное подтверждение, не заливка</td><td>После отправки</td></tr>
+            <tr><td>empty</td><td>Факт + альтернатива + действие</td><td>Нет свободных окон</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10. Движение ============ -->
+  <section class="ui-section--tight" id="motion">
+    <div class="ui-wrap">
+      <div class="sec-head">
+        <p class="sec-head__num">10 — Движение</p>
+        <div class="sec-head__title">
+          <h2 class="ui-h2">Одна эффектная анимация на страницу</h2>
+          <p>Остальное — микропереходы. Ниже три блока появляются с задержкой 60 ms друг за другом.</p>
+        </div>
+      </div>
+
+      <div class="motion">
+        <div class="ui-card ui-reveal" data-order="0">
+          <p class="ui-label">Появление</p>
+          <p class="ui-text" style="margin-top:var(--s2);font-size:.9rem">Сдвиг 14 px вверх и прозрачность, 420 ms. Появление — только один раз, при первом входе в экран.</p>
+        </div>
+        <div class="ui-card ui-reveal" data-order="1">
+          <p class="ui-label">Задержка</p>
+          <p class="ui-text" style="margin-top:var(--s2);font-size:.9rem">Соседние блоки идут через 60 ms. Больше 80 ms — уже «анимация ради анимации».</p>
+        </div>
+        <div class="ui-card ui-reveal" data-order="2">
+          <p class="ui-label">Отключение</p>
+          <p class="ui-text" style="margin-top:var(--s2);font-size:.9rem">При <span class="ui-mono">prefers-reduced-motion</span> движение выключается полностью, контент остаётся на месте.</p>
+        </div>
+      </div>
+
+      <p class="ui-caption ui-caption--note" style="margin-top:var(--s5)">Никогда: курсор-кружок, прелоадер с процентами, авто-карусель, скролл-джекинг. Ничего из этого не делает сайт дороже — только медленнее.</p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="ui-wrap">
+      <div class="foot__grid">
+        <div>
+          <p class="ui-label">Как пользоваться</p>
+          <ol class="foot__list" style="margin-top:var(--s3);list-style:decimal;padding-left:1.2em">
+            <li><b>Не изобретать.</b> Нужна кнопка — берётся <span class="ui-mono">.ui-btn</span>, а не пишется заново.</li>
+            <li><b>Копировать блок целиком</b> вместе с обёрткой и подписью, иначе поедут отступы.</li>
+            <li><b>Менять только токены.</b> Цвет, шрифт, радиус — в <span class="ui-mono">:root</span> или теме, а не в разметке.</li>
+            <li><b>Новый компонент</b> — сначала сюда, в каталог, потом на страницу клиента.</li>
+          </ol>
+        </div>
+        <div>
+          <p class="ui-label">Файлы</p>
+          <ul class="foot__list" style="margin-top:var(--s3)">
+            <li><b>assets/base.css</b> — токены, темы, компоненты</li>
+            <li><b>assets/base.js</b> — появление, переключение темы</li>
+            <li><b>design.html</b> — эта страница</li>
+            <li><b>_check.html</b> — проверка ширины 390 / 768 / 1440</li>
+          </ul>
+          <p class="ui-caption ui-caption--note" style="margin-top:var(--s4)">Правила и запреты — <span class="ui-mono">docs/design-checklist.md</span> и <span class="ui-mono">.opencode/skills/web-design/</span>.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script src="assets/base.js"></script>
+<script>
+  /* Контраст считаем кодом, а не на глаз */
+  (function () {
+    function lum(hex) {
+      var c = hex.replace('#', '');
+      var v = [0, 2, 4].map(function (i) {
+        var n = parseInt(c.substr(i, 2), 16) / 255;
+        return n <= 0.03928 ? n / 12.92 : Math.pow((n + 0.055) / 1.055, 2.4);
+      });
+      return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+    }
+    function ratio(a, b) {
+      var l1 = lum(a), l2 = lum(b);
+      var hi = Math.max(l1, l2), lo = Math.min(l1, l2);
+      return (hi + 0.05) / (lo + 0.05);
+    }
+    var pals = document.querySelectorAll('.pal');
+    for (var i = 0; i < pals.length; i++) {
+      var p = pals[i];
+      var bg = p.getAttribute('data-bg');
+      var pairs = {
+        ink: [p.getAttribute('data-ink'), bg],
+        soft: [p.getAttribute('data-soft'), bg],
+        btn: [p.getAttribute('data-onaccent'), p.getAttribute('data-accent')]
+      };
+      Object.keys(pairs).forEach(function (key) {
+        var out = p.querySelector('[data-r="' + key + '"]');
+        if (!out) return;
+        var r = ratio(pairs[key][0], pairs[key][1]);
+        out.textContent = r.toFixed(2).replace('.', ',') + ':1';
+        var min = key === 'btn' ? 4.5 : 4.5;
+        out.style.color = r >= min ? '' : '#B3261E';
+      });
+    }
+  })();
+</script>
+</body>
+</html>

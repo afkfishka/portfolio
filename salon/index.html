@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="ru" data-theme="salon">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F4F0E8">
+  <title>Флёр — парикмахерский зал · демо</title>
+  <meta name="description" content="Демонстрационный сайт вымышленного парикмахерского зала: пример прайса, мастеров и сценария записи без звонка.">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5.3.0/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5.3.0/500.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/onest@5.3.1/index.css">
+  <link rel="stylesheet" href="../assets/base.css">
+  <style>
+    html[data-theme="salon"] {
+      --font-display: "Cormorant Garamond", Georgia, serif;
+      --font-text: "Onest Variable", system-ui, sans-serif;
+      --font-mono: "Onest Variable", system-ui, sans-serif;
+      --wrap: 1240px;
+      --gutter: clamp(20px, 4vw, 40px);
+    }
+    body { background: var(--bg); }
+    p { text-wrap: pretty; }
+
+    .skip { position: absolute; top: 8px; left: -999px; z-index: 20; padding: 10px 14px; background: var(--accent); color: var(--accent-ink); }
+    .skip:focus { left: 8px; }
+    .head { border-bottom: 1px solid var(--line); }
+    .head__inner { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; text-decoration: none; }
+    .brand__name { font-family: var(--font-display); font-size: 27px; line-height: 1; }
+    .brand__note { display: block; margin-top: 3px; color: var(--ink-soft); font: 10px/1.3 var(--font-text); letter-spacing: .06em; text-transform: uppercase; }
+    .demo-mark { padding: 5px 8px; border: 1px solid var(--line-strong); color: var(--ink-soft); font: 10px/1.2 var(--font-text); letter-spacing: .1em; text-transform: uppercase; }
+    .nav { display: flex; align-items: center; gap: clamp(12px, 2.4vw, 30px); }
+    .nav a { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; color: var(--ink-soft); font-size: 12px; text-decoration: none; text-underline-offset: 4px; }
+    .nav a:hover, .nav a:focus-visible { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); }
+
+    .hero { padding-block: clamp(36px, 7vw, 88px) clamp(48px, 8vw, 104px); }
+    .hero__grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(28px, 6vw, 80px); align-items: center; }
+    .hero__copy { min-width: 0; }
+    .eyebrow { color: var(--accent); }
+    .hero h1 { max-width: 680px; margin-top: clamp(18px, 3vw, 34px); font-size: clamp(3.5rem, 8.4vw, 7.5rem); line-height: .88; letter-spacing: -.035em; text-wrap: balance; }
+    .hero h1 em { color: var(--accent); font-weight: 400; }
+    .hero__lead { max-width: 45ch; margin-top: 24px; color: var(--ink-soft); font-size: clamp(1rem, 1.4vw, 1.125rem); line-height: 1.6; }
+    .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin-top: 27px; }
+    .hero__actions .ui-btn { min-height: 50px; }
+    .hero__note { margin-top: 12px; color: var(--ink-soft); font-size: 11px; }
+    .hero__visual { position: relative; min-width: 0; }
+    .hero__photo { width: 100%; aspect-ratio: 4 / 5; overflow: hidden; background: var(--surface); }
+    .hero__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 46%; }
+    .photo-caption { margin-top: 8px; color: var(--ink-soft); font-size: 10px; }
+    .slot-card { position: absolute; right: -18px; bottom: 46px; width: min(280px, 78%); padding: 18px 20px; border: 1px solid var(--line-strong); background: var(--bg); }
+    .slot-card__label { color: var(--ink-soft); font: 10px/1.3 var(--font-text); letter-spacing: .1em; text-transform: uppercase; }
+    .slot-card__time { display: block; margin-top: 4px; font: 500 clamp(2rem, 3.5vw, 3.1rem)/1 var(--font-display); font-variant-numeric: lining-nums; }
+    .slot-card__service { margin-top: 7px; color: var(--ink-soft); font-size: 12px; }
+    .slot-card__link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 8px; color: var(--accent); font-size: 12px; font-weight: 600; text-underline-offset: 4px; }
+    .slot-card__disclaimer { margin-top: 3px; color: var(--ink-soft); font-size: 10px; line-height: 1.4; }
+    .hero__rule { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 14px; margin-top: clamp(38px, 6vw, 68px); color: var(--ink-soft); font-size: 11px; }
+    .hero__rule::before, .hero__rule::after { content: ""; height: 1px; background: var(--line); }
+
+    .section { padding-block: clamp(56px, 8vw, 104px); border-top: 1px solid var(--line); }
+    .section__head { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: clamp(18px, 4vw, 52px); align-items: baseline; margin-bottom: clamp(26px, 4vw, 44px); }
+    .section__number { color: var(--accent); }
+    .section__title { font-size: clamp(2.6rem, 5.8vw, 5.2rem); line-height: .92; letter-spacing: -.025em; }
+    .section__intro { max-width: 45ch; margin-top: 10px; color: var(--ink-soft); font-size: 14px; }
+    .menu { list-style: none; border-top: 1px solid var(--line-strong); }
+    .menu__row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(40px, 1fr) auto; gap: 14px; align-items: end; padding-block: 17px; border-bottom: 1px solid var(--line); }
+    .menu__name { font-size: 16px; font-weight: 500; }
+    .menu__duration { display: block; margin-top: 4px; color: var(--ink-soft); font-size: 11px; }
+    .menu__dots { height: 1px; margin-bottom: 6px; border-bottom: 1px dotted var(--line-strong); }
+    .menu__price { font-variant-numeric: tabular-nums; font-size: 15px; white-space: nowrap; }
+    .section__disclaimer { margin-top: 16px; color: var(--ink-soft); font-size: 11px; }
+
+    .masters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 5vw, 64px); border-top: 1px solid var(--line-strong); }
+    .master { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 16px; align-items: start; padding-top: 20px; }
+    .master__initial { display: grid; place-items: center; width: 52px; height: 52px; border: 1px solid var(--line-strong); color: var(--accent); font: 500 24px/1 var(--font-display); }
+    .master__name { font: 500 27px/1.05 var(--font-display); }
+    .master__role { margin-top: 7px; color: var(--ink-soft); font-size: 12px; }
+
+    .booking { background: #14100C; color: #F4F0E8; }
+    .booking .section__number { color: #D9A28A; }
+    .booking .section__intro, .booking .section__disclaimer { color: rgba(244,240,232,.72); }
+    .booking__grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(260px, 5fr); gap: clamp(28px, 7vw, 88px); align-items: start; }
+    .booking__panel { max-width: 620px; }
+    .field { display: grid; gap: 7px; margin-top: 22px; }
+    .field label, .slots legend { font-size: 13px; font-weight: 500; }
+    .field label { display: flex; align-items: center; min-height: 44px; }
+    .booking select { min-height: 48px; padding: 10px 12px; border-color: rgba(244,240,232,.38); background: #14100C; color: #F4F0E8; }
+    .slots { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 23px; border: 0; }
+    .slots legend { width: 100%; margin-bottom: 4px; }
+    .slot-option { position: relative; }
+    .slot-option input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    .slot-option label { display: grid; place-items: center; min-width: 92px; min-height: 48px; padding: 9px 14px; border: 1px solid rgba(244,240,232,.38); color: #F4F0E8; font-size: 14px; cursor: pointer; }
+    .slot-option input:checked + label { border-color: #D9A28A; background: #D9A28A; color: #14100C; }
+    .slot-option input:focus-visible + label { outline: 2px solid #F4F0E8; outline-offset: 3px; }
+    .booking__submit { margin-top: 22px; }
+    .booking__submit .ui-btn { min-height: 50px; --btn-bg: #D9A28A; --btn-ink: #14100C; --btn-line: #D9A28A; }
+    .booking__status { min-height: 26px; margin-top: 14px; color: #F4F0E8; font-size: 13px; }
+    .booking__side { padding-top: 6px; }
+    .booking__side-title { font: 500 clamp(1.8rem, 3.2vw, 2.8rem)/1 var(--font-display); }
+    .booking__side p { margin-top: 12px; color: rgba(244,240,232,.72); font-size: 13px; line-height: 1.6; }
+    .booking__side .ui-label { margin-top: 24px; color: #D9A28A; }
+
+    .foot { padding-block: 22px 30px; }
+    .foot__inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; color: var(--ink-soft); font-size: 11px; }
+    .foot__inner a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+
+    @media (hover: hover) and (pointer: fine) {
+      .nav a:hover { color: var(--ink); }
+      .slot-card__link:hover { text-decoration-thickness: 2px; }
+      .menu__row:hover { padding-left: 6px; }
+      .ui-btn:hover { filter: brightness(1.06); }
+    }
+    @media (max-width: 760px) {
+      .head__inner { min-height: 64px; }
+      .nav { gap: 10px; }
+      .nav a { font-size: 11px; }
+      .nav a:nth-child(2) { display: none; }
+      .hero__grid, .booking__grid { grid-template-columns: 1fr; }
+      .hero__grid { gap: 32px; }
+      .hero h1 { max-width: 560px; font-size: clamp(4rem, 14vw, 6.2rem); }
+      .hero__visual { width: min(100%, 520px); margin-left: auto; }
+      .slot-card { right: -8px; bottom: 38px; }
+      .section__head { grid-template-columns: 1fr; gap: 12px; }
+      .section__title { font-size: clamp(2.8rem, 11vw, 4.2rem); }
+      .booking__grid { gap: 36px; }
+      .booking__side { padding-top: 0; }
+    }
+    @media (max-width: 430px) {
+      .brand__name { font-size: 24px; }
+      .brand__note { font-size: 9px; }
+      .demo-mark { padding-inline: 6px; font-size: 9px; }
+      .nav { gap: 8px; }
+      .nav a { font-size: 10px; }
+      .hero { padding-top: 34px; }
+      .hero h1 { font-size: clamp(3.55rem, 15vw, 4.2rem); }
+      .hero__actions { align-items: flex-start; flex-direction: column; gap: 8px; }
+      .hero__visual { width: calc(100% - 8px); }
+      .slot-card { right: -8px; bottom: 34px; width: min(248px, 82%); padding: 14px 16px; }
+      .slot-card__time { font-size: 2.4rem; }
+      .hero__rule { gap: 8px; font-size: 9px; }
+      .menu__row { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; }
+      .menu__dots { display: none; }
+      .menu__name { font-size: 14px; }
+      .menu__price { grid-column: 2; grid-row: 1; font-size: 13px; }
+      .menu__duration { font-size: 10px; }
+      .masters { grid-template-columns: 1fr; gap: 22px; }
+      .section__title { font-size: clamp(2.6rem, 11vw, 3.4rem); }
+      .slot-option label { min-width: 84px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">К содержимому</a>
+  <header class="head">
+    <div class="ui-wrap head__inner">
+      <a class="brand" href="#top">
+        <span><span class="brand__name">Флёр</span><span class="brand__note">парикмахерский зал</span></span>
+      </a>
+      <span class="demo-mark">Демо · вымышленный салон</span>
+      <nav class="nav" aria-label="Разделы страницы">
+        <a href="#services">Услуги</a><a href="#masters">Мастера</a><a href="#booking">Запись</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="ui-wrap">
+        <div class="hero__grid">
+          <div class="hero__copy">
+            <p class="ui-label eyebrow">01 — Парикмахерский зал · демо</p>
+            <h1 class="ui-h1" id="hero-title">Стрижка,<br>цвет <em>и уход.</em></h1>
+            <p class="hero__lead">Выберите услугу и время без звонка. Ниже — пример прайса и короткий демонстрационный сценарий записи.</p>
+            <div class="hero__actions">
+              <a class="ui-btn ui-btn--solid" href="#booking" data-slot="18:30">Выбрать время <span aria-hidden="true">↗</span></a>
+              <a class="ui-btn ui-btn--ghost" href="#services">Посмотреть прайс <span aria-hidden="true">↓</span></a>
+            </div>
+            <p class="hero__note">Интерфейс показывает пример — запись не отправляется в салон.</p>
+          </div>
+          <div class="hero__visual">
+            <figure class="ui-photo-frame hero__photo">
+              <img src="../assets/salon-thumb.webp" width="800" height="1067" alt="Иллюстрация: мастер подравнивает волосы ножницами" fetchpriority="high">
+            </figure>
+            <p class="photo-caption">Иллюстрация · образ вымышленного салона</p>
+            <aside class="slot-card" aria-label="Демонстрационное свободное окно">
+              <span class="slot-card__label">Пример свободного окна · сегодня</span>
+              <strong class="slot-card__time">18:30</strong>
+              <p class="slot-card__service">Стрижка · мастер Анна · демо-данные</p>
+              <a class="slot-card__link" href="#booking" data-slot="18:30">Проверить сценарий записи <span aria-hidden="true">↗</span></a>
+              <p class="slot-card__disclaimer">Время не относится к реальному расписанию.</p>
+            </aside>
+          </div>
+        </div>
+        <p class="hero__rule"><span>Прайс и мастера — примеры</span><span aria-hidden="true">·</span><span>Компания вымышленная</span></p>
+      </div>
+    </section>
+
+    <section class="section" id="services" aria-labelledby="services-title">
+      <div class="ui-wrap">
+        <header class="section__head">
+          <p class="ui-label section__number">02 — Пример прайса</p>
+          <div><h2 class="ui-h2 section__title" id="services-title">Услуги и цены</h2><p class="section__intro">Пример меню парикмахерского зала. Состав и стоимость в реальном проекте согласуются с владельцем.</p></div>
+        </header>
+        <ul class="menu">
+          <li class="menu__row"><span><span class="menu__name">Стрижка и форма</span><span class="menu__duration">Примерная длительность · 60 минут</span></span><span class="menu__dots" aria-hidden="true"></span><span class="menu__price">2 500 ₽</span></li>
+          <li class="menu__row"><span><span class="menu__name">Укладка</span><span class="menu__duration">Примерная длительность · 45 минут</span></span><span class="menu__dots" aria-hidden="true"></span><span class="menu__price">1 500 ₽</span></li>
+          <li class="menu__row"><span><span class="menu__name">Окрашивание в один тон</span><span class="menu__duration">Примерная длительность · от 120 минут</span></span><span class="menu__dots" aria-hidden="true"></span><span class="menu__price">от 5 500 ₽</span></li>
+          <li class="menu__row"><span><span class="menu__name">Уход для волос</span><span class="menu__duration">Примерная длительность · 60 минут</span></span><span class="menu__dots" aria-hidden="true"></span><span class="menu__price">3 000 ₽</span></li>
+        </ul>
+        <p class="section__disclaimer">Все названия, цены и длительность — демонстрационные, не оферта и не прайс действующего салона.</p>
+      </div>
+    </section>
+
+    <section class="section" id="masters" aria-labelledby="masters-title">
+      <div class="ui-wrap">
+        <header class="section__head">
+          <p class="ui-label section__number">03 — Команда · демо</p>
+          <div><h2 class="ui-h2 section__title" id="masters-title">Мастера</h2><p class="section__intro">Вместо вымышленных портретов — простой список специализаций.</p></div>
+        </header>
+        <div class="masters">
+          <article class="master"><span class="master__initial" aria-hidden="true">А</span><div><h3 class="master__name">Анна</h3><p class="master__role">Стрижки и укладки · персонаж демо</p></div></article>
+          <article class="master"><span class="master__initial" aria-hidden="true">М</span><div><h3 class="master__name">Марина</h3><p class="master__role">Цвет и уход · персонаж демо</p></div></article>
+        </div>
+        <p class="section__disclaimer">Имена и специализации придуманы для примера. Это не реальные сотрудники.</p>
+      </div>
+    </section>
+
+    <section class="section booking" id="booking" aria-labelledby="booking-title">
+      <div class="ui-wrap">
+        <header class="section__head">
+          <p class="ui-label section__number">04 — Запись · демо</p>
+          <div><h2 class="ui-h2 section__title" id="booking-title">Выберите время</h2><p class="section__intro">Попробуйте сценарий на странице. Он не отправляет и не сохраняет ваши данные.</p></div>
+        </header>
+        <div class="booking__grid">
+          <form class="booking__panel" id="booking-form" action="#booking" method="get" novalidate>
+            <div class="field">
+              <label for="service-choice">Услуга</label>
+              <select class="ui-input" id="service-choice" name="service">
+                <option value="" selected disabled>Выберите услугу</option>
+                <option value="Стрижка и форма">Стрижка и форма · 2 500 ₽</option>
+                <option value="Укладка">Укладка · 1 500 ₽</option>
+                <option value="Окрашивание в один тон">Окрашивание · от 5 500 ₽</option>
+                <option value="Уход для волос">Уход для волос · 3 000 ₽</option>
+              </select>
+            </div>
+            <fieldset class="slots">
+              <legend>Время · демонстрационные варианты</legend>
+              <span class="slot-option"><input type="radio" id="slot-1830" name="time" value="18:30" checked><label for="slot-1830">18:30 · демо</label></span>
+              <span class="slot-option"><input type="radio" id="slot-1915" name="time" value="19:15"><label for="slot-1915">19:15 · демо</label></span>
+            </fieldset>
+            <div class="booking__submit"><button class="ui-btn ui-btn--solid" type="submit">Показать запись <span aria-hidden="true">↗</span></button></div>
+            <p class="booking__status" id="booking-status" role="status" aria-live="polite"></p>
+          </form>
+          <aside class="booking__side">
+            <h3 class="booking__side-title">Без звонка.<br>Без отправки данных.</h3>
+            <p>После выбора услуги и времени здесь появится пример подтверждения. Никакой реальной записи не создаётся.</p>
+            <p class="ui-label">Демонстрационный сценарий</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="ui-wrap foot__inner">
+      <span>Флёр · демонстрационный проект</span>
+      <span>Салон, цены и мастера вымышлены</span>
+      <a href="#top">К началу ↑</a>
+    </div>
+  </footer>
+  <noscript><p class="ui-wrap section__disclaimer">Для демонстрации выбора услуги и времени включите JavaScript. Данные всё равно не отправляются.</p></noscript>
+  <script src="../assets/base.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var form = document.getElementById('booking-form');
+      var status = document.getElementById('booking-status');
+
+      document.querySelectorAll('[data-slot]').forEach(function (link) {
+        link.addEventListener('click', function () {
+          var option = document.querySelector('input[name="time"][value="' + link.dataset.slot + '"]');
+          if (option) option.checked = true;
+        });
+      });
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var service = document.getElementById('service-choice');
+        if (!service.value) {
+          status.textContent = 'Выберите услугу, чтобы увидеть пример записи.';
+          service.focus();
+          return;
+        }
+        var time = form.querySelector('input[name="time"]:checked').value;
+        status.textContent = 'Демо-запись: ' + service.value + ' · сегодня ' + time + '. Ничего не отправлено и не сохранено.';
+      });
+    }());
+  </script>
+</body>
+</html>

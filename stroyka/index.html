@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="ru" data-theme="build">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0E0E0C">
+  <title>Калькулятор строительства дома — демо</title>
+  <meta name="description" content="Демонстрационный калькулятор строительства частного дома на условных ставках. Компания и расчёт вымышлены.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/base.css">
+  <style>
+    html[data-theme="build"] {
+      --font-display: "Unbounded", system-ui, sans-serif;
+      --font-text: "Onest", system-ui, sans-serif;
+      --font-mono: "Onest", system-ui, sans-serif;
+      --wrap: 1240px;
+      --gutter: clamp(20px, 4vw, 40px);
+    }
+    body { background: var(--bg); }
+    p { text-wrap: pretty; }
+    .skip { position: absolute; top: 8px; left: -999px; z-index: 20; padding: 10px 14px; background: var(--accent); color: var(--accent-ink); }
+    .skip:focus { left: 8px; }
+    .header { border-bottom: 1px solid var(--line); }
+    .header__inner { display: flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 70px; }
+    .brand { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; color: var(--ink); text-decoration: none; }
+    .brand__mark { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--accent); color: var(--accent); font: 500 12px/1 var(--font-text); }
+    .brand__name { font-size: 12px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
+    .brand__note { display: block; margin-top: 3px; color: var(--ink-soft); font: 10px/1.2 var(--font-text); }
+    .demo { padding: 6px 8px; border: 1px solid var(--line-strong); color: var(--ink-soft); font: 10px/1.2 var(--font-text); letter-spacing: .08em; text-transform: uppercase; }
+    .nav { display: flex; align-items: center; gap: 18px; }
+    .nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-soft); font-size: 12px; text-decoration: none; }
+    .nav a:hover, .nav a:focus-visible { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); }
+
+    .hero { position: relative; overflow: hidden; padding-block: clamp(42px, 6vw, 78px) clamp(58px, 8vw, 100px); background-image: linear-gradient(rgba(242,240,235,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(242,240,235,.055) 1px, transparent 1px); background-size: 80px 80px; }
+    .hero::before { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(14,14,12,.94), rgba(14,14,12,.80) 55%, rgba(14,14,12,.94)); content: ""; pointer-events: none; }
+    .hero__inner { position: relative; z-index: 1; }
+    .hero__grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(360px, 5fr); gap: clamp(28px, 5vw, 68px); align-items: center; }
+    .hero__copy { min-width: 0; }
+    .eyebrow, .section-index { color: var(--accent); }
+    .hero h1 { max-width: 780px; margin-top: 24px; font-family: var(--font-display); font-size: clamp(2.6rem, 5.5vw, 5.4rem); font-weight: 500; line-height: .98; letter-spacing: -.055em; text-wrap: balance; }
+    .hero__lead { max-width: 52ch; margin-top: 22px; color: var(--ink-soft); font-size: 16px; line-height: 1.6; }
+    .facts { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; max-width: 650px; margin-top: 35px; padding-top: 15px; border-top: 1px solid var(--line-strong); }
+    .fact { min-width: 0; }
+    .fact__value { display: block; color: var(--ink); font: 500 clamp(18px,2vw,26px)/1.15 var(--font-text); font-variant-numeric: tabular-nums; }
+    .fact__label { display: block; margin-top: 6px; color: var(--ink-soft); font-size: 11px; line-height: 1.4; }
+    .hero__notice { max-width: 62ch; margin-top: 22px; color: var(--ink-soft); font-size: 11px; line-height: 1.5; }
+
+    .calc { min-width: 0; border: 1px solid var(--line-strong); background: rgba(23,23,21,.96); }
+    .calc__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 48px; padding: 0 16px; border-bottom: 1px solid var(--line); }
+    .calc__head strong { font: 500 11px/1.3 var(--font-text); letter-spacing: .09em; text-transform: uppercase; }
+    .calc__head span { color: var(--accent); font: 10px/1.3 var(--font-text); letter-spacing: .08em; }
+    .calc__body { padding: clamp(16px,2.3vw,26px); }
+    .field { display: grid; gap: 12px; }
+    .field + .field { margin-top: 24px; }
+    .field__top { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+    .field label, .field__label { color: var(--ink-soft); font-size: 12px; }
+    .area-value { color: var(--ink); font: 500 22px/1.1 var(--font-text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .area-value output { color: var(--ink); }
+    .range { width: 100%; height: 26px; margin: 0; background: transparent; accent-color: var(--accent); cursor: pointer; }
+    .range:focus-visible, .package-select:focus-visible, .nav a:focus-visible, .brand:focus-visible, .footer a:focus-visible, .cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .range::-webkit-slider-runnable-track { height: 3px; background: var(--line-strong); }
+    .range::-webkit-slider-thumb { width: 18px; height: 18px; margin-top: -7px; appearance: none; border: 2px solid var(--bg); background: var(--accent); }
+    .range::-moz-range-track { height: 3px; background: var(--line-strong); }
+    .range::-moz-range-thumb { width: 14px; height: 14px; border: 2px solid var(--bg); border-radius: 0; background: var(--accent); }
+    .range__ends { display: flex; justify-content: space-between; margin-top: -5px; color: var(--ink-soft); font: 10px/1.3 var(--font-text); font-variant-numeric: tabular-nums; }
+    .package-select { width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 0; background: var(--bg); color: var(--ink); font: 13px/1.3 var(--font-text); }
+    .rate { display: flex; justify-content: space-between; gap: 12px; color: var(--ink-soft); font-size: 11px; line-height: 1.4; }
+    .rate output { color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .total { margin-top: 23px; padding-top: 18px; border-top: 1px solid var(--line-strong); }
+    .total__label { color: var(--ink-soft); font: 10px/1.4 var(--font-text); letter-spacing: .08em; text-transform: uppercase; }
+    .total__value { display: block; margin-top: 8px; color: var(--accent); font: 500 clamp(2rem,4.1vw,3.65rem)/1 var(--font-text); letter-spacing: -.045em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    .total__formula { display: block; margin-top: 8px; color: var(--ink-soft); font: 10px/1.5 var(--font-text); font-variant-numeric: tabular-nums; }
+    .total__disclaimer { margin-top: 13px; padding-left: 10px; border-left: 2px solid var(--accent); color: var(--ink); font-size: 10px; line-height: 1.5; }
+
+    .section { padding-block: clamp(58px,8vw,104px); border-top: 1px solid var(--line); }
+    .section__head { display: grid; grid-template-columns: minmax(130px,2fr) minmax(0,7fr) minmax(180px,3fr); gap: clamp(16px,3vw,40px); align-items: start; margin-bottom: 32px; }
+    .section__head h2 { max-width: 700px; font: 500 clamp(2rem,4.3vw,3.7rem)/1.02 var(--font-display); letter-spacing: -.05em; text-wrap: balance; }
+    .section__head > p:last-child { max-width: 34ch; color: var(--ink-soft); font-size: 13px; line-height: 1.55; }
+    .packages { width: 100%; border-collapse: collapse; text-align: left; }
+    .packages th { padding: 12px 14px 12px 0; border-bottom: 1px solid var(--line-strong); color: var(--ink-soft); font: 10px/1.4 var(--font-text); letter-spacing: .08em; text-transform: uppercase; }
+    .packages td { padding: 18px 14px 18px 0; border-bottom: 1px solid var(--line); color: var(--ink); font-size: 13px; line-height: 1.5; vertical-align: top; }
+    .packages td:first-child { width: 22%; font-weight: 500; }
+    .packages td:last-child, .packages th:last-child { padding-right: 0; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .packages small { display: block; margin-top: 4px; color: var(--ink-soft); font-size: 10px; }
+    .table-note { margin-top: 14px; color: var(--ink-soft); font-size: 11px; line-height: 1.5; }
+
+    .steps { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: clamp(24px,7vw,90px); align-items: start; }
+    .steps__list { list-style: none; border-top: 1px solid var(--line-strong); }
+    .steps__list li { display: grid; grid-template-columns: 42px minmax(0,1fr); gap: 12px; padding: 17px 0; border-bottom: 1px solid var(--line); }
+    .steps__no { color: var(--accent); font: 11px/1.5 var(--font-text); font-variant-numeric: tabular-nums; }
+    .steps__list strong { font-size: 14px; font-weight: 500; }
+    .steps__list p { margin-top: 5px; color: var(--ink-soft); font-size: 12px; line-height: 1.5; }
+    .house-figure { margin: 0; }
+    .house-figure__frame { overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+    .house-figure img { display: block; width: 100%; height: auto; }
+    .house-figure figcaption { margin-top: 8px; color: var(--ink-soft); font-size: 10px; }
+
+    .bottom { padding-block: 28px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .bottom__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; }
+    .bottom h2 { font: 500 clamp(1.5rem,3vw,2.2rem)/1.1 var(--font-display); letter-spacing: -.04em; }
+    .bottom p { margin-top: 7px; color: var(--ink-soft); font-size: 12px; }
+    .cta { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 18px; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink); font-size: 13px; font-weight: 600; text-decoration: none; }
+    .footer { padding-block: 16px 26px; }
+    .footer__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px; color: var(--ink-soft); font-size: 10px; }
+    .footer a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); }
+    .skip:focus, .cta:focus-visible { outline-offset: 3px; }
+
+    @media (hover:hover) and (pointer:fine) {
+      .nav a:hover { color: var(--ink); }
+      .cta:hover { filter: brightness(1.08); }
+    }
+    @media (max-width:980px) {
+      .hero__grid { grid-template-columns: minmax(0,1fr) minmax(320px,.9fr); gap: 28px; }
+      .section__head { grid-template-columns: minmax(110px,2fr) minmax(0,7fr); }
+      .section__head > p:last-child { grid-column: 2; }
+    }
+    @media (max-width:700px) {
+      .header__inner { min-height: 62px; }
+      .nav { gap: 8px; }
+      .nav a { font-size: 10px; }
+      .nav a:first-child { display: none; }
+      .hero { padding-block: 38px 58px; }
+      .hero__grid { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
+      .hero__copy { display: contents; }
+      .hero__copy .eyebrow { order: 0; }
+      .hero h1 { order: 1; margin-top: 12px; }
+      .calc { order: 2; width: min(100%,520px); margin-top: 22px; }
+      .hero__lead { order: 3; margin-top: 22px; }
+      .facts { order: 4; }
+      .hero__notice { order: 5; }
+      .hero h1 { max-width: 640px; font-size: clamp(2.3rem,9.5vw,4rem); }
+      .hero__lead { font-size: 15px; }
+      .facts { margin-top: 26px; }
+      .section__head { grid-template-columns: 1fr; gap: 12px; }
+      .section__head > p:last-child { grid-column: auto; }
+      .section__head h2 { font-size: clamp(2rem,8.7vw,3rem); }
+      .steps { grid-template-columns: 1fr; }
+      .house-figure { max-width: 560px; }
+      .packages thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); clip-path: inset(50%); white-space: nowrap; }
+      .packages, .packages tbody { display: block; }
+      .packages tr { display: grid; grid-template-columns: 1fr auto; gap: 0 14px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+      .packages td { display: block; padding: 5px 0; border: 0; text-align: left !important; white-space: normal; }
+      .packages td:first-child { grid-column: 1; width: auto; font-size: 15px; }
+      .packages td:nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
+      .packages td:last-child { grid-column: 2; grid-row: 1; color: var(--accent); font-size: 12px; }
+      .packages td[data-label]::before { display: block; margin-bottom: 3px; color: var(--ink-soft); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; content: attr(data-label); }
+    }
+    @media (max-width:420px) {
+      .demo { padding: 5px 6px; font-size: 9px; }
+      .brand__note { font-size: 9px; }
+      .hero h1 { font-size: clamp(2.18rem,9.4vw,2.7rem); }
+      .facts { gap: 10px; }
+      .fact__value { font-size: 17px; }
+      .calc__body { padding: 15px; }
+      .total__value { font-size: clamp(1.9rem,9vw,2.5rem); }
+      .packages tr { grid-template-columns: minmax(0,1fr) auto; }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">К содержимому</a>
+  <header class="header">
+    <div class="ui-wrap header__inner">
+      <a class="brand" href="#top"><span class="brand__mark" aria-hidden="true">С</span><span><span class="brand__name">Строительство дома</span><span class="brand__note">Демонстрационный проект</span></span></a>
+      <div style="display:flex;align-items:center;gap:clamp(10px,2.5vw,28px)"><span class="demo">Демо · компания вымышленная</span><nav class="nav" aria-label="Разделы"><a href="#packages">Комплектации</a><a href="#process">О расчёте</a></nav></div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="ui-wrap hero__inner hero__grid">
+        <div class="hero__copy">
+          <p class="ui-label eyebrow">Частное строительство · калькулятор демо</p>
+          <h1 id="hero-title">Дом по параметрам, а не «на глаз»</h1>
+          <p class="hero__lead">Измените площадь и комплектацию — увидите, как меняется примерный бюджет. Формула открыта, ставка показана рядом с результатом.</p>
+          <div class="facts" aria-label="Что можно изменить в расчёте">
+            <div class="fact"><span class="fact__value">70–180</span><span class="fact__label">м² · пример диапазона</span></div>
+            <div class="fact"><span class="fact__value">03</span><span class="fact__label">демо-комплектации</span></div>
+            <div class="fact"><span class="fact__value">01</span><span class="fact__label">открытая формула</span></div>
+          </div>
+          <p class="hero__notice">Компания и расчёт вымышлены. Ставки условные, только для демонстрации работы калькулятора; это не цена строительства и не коммерческое предложение.</p>
+        </div>
+
+        <section class="calc" aria-labelledby="calc-title">
+          <header class="calc__head"><strong id="calc-title">Расчёт параметров</strong><span>КАЛЬКУЛЯТОР · ДЕМО</span></header>
+          <div class="calc__body">
+            <div class="field">
+              <div class="field__top"><label for="area-range">Площадь дома</label><span class="area-value"><output id="area-output" for="area-range">100</output> м²</span></div>
+              <input class="range" id="area-range" type="range" min="70" max="180" step="10" value="100" aria-describedby="area-help">
+              <div class="range__ends" id="area-help"><span>70 м²</span><span>180 м²</span></div>
+            </div>
+            <div class="field">
+              <label for="package-choice">Условная комплектация</label>
+              <select class="package-select" id="package-choice">
+                <option value="box" data-rate="80000">Коробка · демо</option>
+                <option value="warm" data-rate="110000" selected>Тёплый контур · демо</option>
+                <option value="finish" data-rate="145000">Под отделку · демо</option>
+              </select>
+            </div>
+            <p class="rate"><span>Условная ставка</span><output id="rate-output">110 000 ₽ / м²</output></p>
+            <div class="total" aria-live="polite" aria-atomic="true">
+              <span class="total__label">Демонстрационный итог</span>
+              <output class="total__value" id="total-output" for="area-range package-choice">11 000 000 ₽</output>
+              <span class="total__formula" id="formula-output">100 м² × 110 000 ₽/м² · условная ставка</span>
+              <p class="total__disclaimer">ДЕМО · вымышленные ставки · не коммерческое предложение. Фактическая стоимость зависит от проекта и условий строительства.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="section" id="packages" aria-labelledby="packages-title">
+      <div class="ui-wrap">
+        <header class="section__head">
+          <p class="ui-label section-index">01 — Сравнение составов · демо</p>
+          <h2 id="packages-title">Три уровня комплектации</h2>
+          <p>Пример структуры сравнения. Составы не являются проектной документацией или предложением подрядчика.</p>
+        </header>
+        <table class="packages">
+          <thead><tr><th scope="col">Комплектация</th><th scope="col">Пример условного состава</th><th scope="col">Условная ставка</th></tr></thead>
+          <tbody>
+            <tr><td data-label="Комплектация">Коробка · демо</td><td data-label="Условный состав">Основание, стены и кровля — как демонстрационные позиции калькулятора</td><td data-label="Условная ставка">80 000 ₽ / м²</td></tr>
+            <tr><td data-label="Комплектация">Тёплый контур · демо</td><td data-label="Условный состав">Коробка и условный контур — пример состава для сравнения</td><td data-label="Условная ставка">110 000 ₽ / м²</td></tr>
+            <tr><td data-label="Комплектация">Под отделку · демо</td><td data-label="Условный состав">Расширенный демонстрационный объём без спецификации материалов</td><td data-label="Условная ставка">145 000 ₽ / м²</td></tr>
+          </tbody>
+        </table>
+        <p class="table-note">Все ставки и описания придуманы для демонстрации интерактивного расчёта. Не использовать для оценки реальной стройки.</p>
+      </div>
+    </section>
+
+    <section class="section" id="process" aria-labelledby="process-title">
+      <div class="ui-wrap">
+        <header class="section__head">
+          <p class="ui-label section-index">02 — Принцип расчёта</p>
+          <h2 id="process-title">Понятно, откуда взялась сумма</h2>
+          <p>Никаких скрытых коэффициентов: только два параметра и демонстрационная ставка.</p>
+        </header>
+        <div class="steps">
+          <ol class="steps__list">
+            <li><span class="steps__no">01</span><div><strong>Укажите площадь</strong><p>Ползунок меняется шагом 10 м²; доступны значения от 70 до 180 м².</p></div></li>
+            <li><span class="steps__no">02</span><div><strong>Выберите комплектацию</strong><p>Для каждого условного варианта показана отдельная ставка за квадратный метр.</p></div></li>
+            <li><span class="steps__no">03</span><div><strong>Проверьте формулу</strong><p>Площадь × демонстрационная ставка = демонстрационный итог.</p></div></li>
+          </ol>
+          <figure class="house-figure">
+            <div class="house-figure__frame"><img src="../assets/build-thumb.webp" width="1200" height="900" alt="Иллюстрация частного дома для демонстрации строительной тематики" loading="lazy"></div>
+            <figcaption>Иллюстрация · вымышленный пример дома, не объект компании</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="bottom" aria-label="К калькулятору">
+      <div class="ui-wrap bottom__inner"><div><h2>Поменяйте параметры расчёта</h2><p>Калькулятор работает локально и не отправляет данные.</p></div><a class="cta" href="#top">К калькулятору ↑</a></div>
+    </section>
+  </main>
+  <footer class="footer"><div class="ui-wrap footer__inner"><span>Демонстрационный проект · компания вымышленная</span><span>Ставки и составы условные</span><a href="#top">К началу ↑</a></div></footer>
+  <script>
+    (function () {
+      'use strict';
+      var area = document.getElementById('area-range');
+      var areaOutput = document.getElementById('area-output');
+      var packageChoice = document.getElementById('package-choice');
+      var rateOutput = document.getElementById('rate-output');
+      var totalOutput = document.getElementById('total-output');
+      var formulaOutput = document.getElementById('formula-output');
+      var currency = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
+
+      function recalculate() {
+        var squareMeters = Number(area.value);
+        var selected = packageChoice.options[packageChoice.selectedIndex];
+        var rate = Number(selected.dataset.rate);
+        var total = squareMeters * rate;
+        areaOutput.value = String(squareMeters);
+        areaOutput.textContent = String(squareMeters);
+        rateOutput.value = currency.format(rate) + ' ₽ / м²';
+        rateOutput.textContent = currency.format(rate) + ' ₽ / м²';
+        totalOutput.value = currency.format(total) + ' ₽';
+        totalOutput.textContent = currency.format(total) + ' ₽';
+        formulaOutput.textContent = squareMeters + ' м² × ' + currency.format(rate) + ' ₽/м² · условная ставка';
+      }
+
+      area.addEventListener('input', recalculate);
+      packageChoice.addEventListener('change', recalculate);
+      recalculate();
+    }());
+  </script>
+</body>
+</html>

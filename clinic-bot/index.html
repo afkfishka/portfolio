@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="ru" data-theme="clinic">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F1F4F1">
+  <title>Запись в стоматологию через бота — демо</title>
+  <meta name="description" content="Демонстрация вымышленного Telegram-бота записи в стоматологию: выберите услугу, время и посмотрите обращение администратору.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/base.css">
+  <style>
+    html[data-theme="clinic"] {
+      --font-display: "Onest", system-ui, sans-serif;
+      --font-text: "Onest", system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+      --wrap: 1240px;
+      --gutter: clamp(20px, 4vw, 40px);
+    }
+    body { background: var(--bg); }
+    a { text-underline-offset: 4px; }
+    .skip { position: absolute; top: 8px; left: -999px; z-index: 30; padding: 10px 14px; background: var(--accent); color: var(--accent-ink); }
+    .skip:focus { left: 8px; }
+    .top { border-bottom: 1px solid var(--line); }
+    .top__inner { display: flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 70px; }
+    .wordmark { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; color: var(--ink); text-decoration: none; }
+    .wordmark__symbol { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--accent); color: var(--accent); font: 500 17px/1 var(--font-mono); }
+    .wordmark__name { font-size: 15px; font-weight: 600; letter-spacing: -.03em; }
+    .wordmark__kind { display: block; margin-top: 2px; color: var(--ink-soft); font: 9px/1.3 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+    .top__right { display: flex; align-items: center; gap: clamp(12px, 2.6vw, 30px); }
+    .demo-tag { padding: 6px 8px; border: 1px solid var(--line-strong); color: var(--ink-soft); font: 10px/1.2 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+    .top__nav { display: flex; align-items: center; gap: 18px; }
+    .top__nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-soft); font-size: 12px; text-decoration: none; }
+    .top__nav a:hover { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); }
+
+    .hero { padding-block: clamp(38px, 6.5vw, 84px) clamp(56px, 8vw, 100px); }
+    .hero__grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(350px, 7fr); gap: clamp(30px, 6vw, 82px); align-items: center; }
+    .hero__copy { min-width: 0; }
+    .eyebrow, .section-index { color: var(--accent); }
+    .hero h1 { max-width: 620px; margin-top: 24px; font-size: clamp(2.8rem, 5.3vw, 5rem); line-height: .99; letter-spacing: -.045em; text-wrap: balance; }
+    .hero__lead { max-width: 45ch; margin-top: 20px; color: var(--ink-soft); font-size: 16px; line-height: 1.6; }
+    .hero__facts { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 26px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--ink-soft); font: 11px/1.5 var(--font-mono); }
+    .hero__facts b { color: var(--ink); font-weight: 500; }
+    .hero__disclaimer { margin-top: 18px; color: var(--ink-soft); font-size: 11px; line-height: 1.5; }
+    .hero__preview { margin-top: 24px; font-size: 12px; }
+    .hero__preview a { color: var(--accent); }
+
+    .phone-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 40px; align-items: center; gap: 12px; min-width: 0; }
+    .phone { position: relative; width: min(100%, 390px); justify-self: center; padding: 9px; border: 2px solid #2B2B2D; border-radius: 48px; background: #171719; box-shadow: 0 18px 42px rgba(12,21,18,.16), 0 2px 5px rgba(12,21,18,.12); }
+    .phone::before, .phone::after { position: absolute; left: -4px; width: 3px; border-radius: 3px 0 0 3px; background: #454548; content: ""; }
+    .phone::before { top: 128px; height: 48px; }
+    .phone::after { top: 190px; height: 70px; }
+    .phone__screen { position: relative; display: flex; flex-direction: column; height: 700px; overflow: hidden; border: 1px solid rgba(12,21,18,.16); border-radius: 38px; background: #FFFFFF; }
+    .phone__status { position: relative; display: flex; flex: none; align-items: center; justify-content: space-between; height: 38px; padding: 0 22px; background: #FFFFFF; color: #111111; font: 600 11px/1 var(--font-text); }
+    .phone__island { position: absolute; top: 7px; left: 50%; width: 91px; height: 24px; transform: translateX(-50%); border-radius: 20px; background: #111111; }
+    .phone__indicators { display: inline-flex; align-items: center; gap: 5px; font: 9px/1 var(--font-text); }
+    .phone__signal { display: inline-flex; align-items: end; gap: 1px; height: 10px; }
+    .phone__signal i { display: block; width: 2px; border-radius: 2px; background: #111; }
+    .phone__signal i:nth-child(1) { height: 4px; }
+    .phone__signal i:nth-child(2) { height: 6px; }
+    .phone__signal i:nth-child(3) { height: 8px; }
+    .phone__signal i:nth-child(4) { height: 10px; }
+    .phone__battery { position: relative; width: 17px; height: 9px; border: 1px solid #111; border-radius: 2px; }
+    .phone__battery::before { position: absolute; inset: 1px 3px 1px 1px; background: #111; content: ""; }
+    .phone__battery::after { position: absolute; top: 2px; right: -3px; width: 2px; height: 3px; border-radius: 0 2px 2px 0; background: #111; content: ""; }
+    .phone__bar { display: grid; flex: none; grid-template-columns: 62px minmax(0,1fr) 58px; align-items: center; min-height: 58px; padding: 0 11px; border-bottom: 1px solid #E6E9EB; background: rgba(255,255,255,.97); }
+    .phone__back { display: inline-flex; align-items: center; gap: 2px; min-height: 44px; color: #2481CC; font-size: 13px; white-space: nowrap; }
+    .phone__back b { font-size: 25px; font-weight: 400; line-height: 1; }
+    .phone__identity { display: grid; grid-template-columns: 34px minmax(0,1fr); align-items: center; justify-content: center; gap: 8px; min-width: 0; }
+    .phone__avatar { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #F4FAF6; font: 12px/1 var(--font-mono); }
+    .phone__title { display: block; overflow: hidden; color: #111111; font-size: 11px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+    .phone__sub { display: block; margin-top: 3px; color: #59636A; font-size: 9px; }
+    .phone__actions { display: flex; justify-content: end; color: #2481CC; }
+    .phone__actions svg { width: 20px; height: 20px; }
+    .chat { display: flex; flex: 1; flex-direction: column; min-height: 0; padding: 10px 10px 6px; background-color: #DDE9E2; background-image: radial-gradient(ellipse at 20% 20%, rgba(255,255,255,.34) 0 1px, transparent 2px), radial-gradient(ellipse at 70% 65%, rgba(31,107,74,.055) 0 1px, transparent 2px), linear-gradient(145deg, rgba(255,255,255,.18), transparent 60%); background-size: 27px 31px, 35px 39px, auto; }
+    .chat__notice { align-self: center; max-width: 270px; margin-bottom: 10px; padding: 5px 9px; border-radius: 8px; background: rgba(255,255,255,.78); color: #52615A; font-size: 9px; line-height: 1.4; text-align: center; }
+    .chat__log { display: flex; flex: 1; flex-direction: column; gap: 8px; overflow-y: auto; padding: 2px 2px 10px; scrollbar-color: #AABBB0 transparent; scrollbar-width: thin; }
+    .message { max-width: 92%; padding: 9px 10px; border: 1px solid rgba(12,21,18,.06); border-radius: 4px 13px 13px 13px; background: #FFFFFF; color: #172126; font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; animation: message-in 180ms cubic-bezier(.2,.7,.2,1) both; box-shadow: 0 1px 1px rgba(12,21,18,.06); }
+    .message--bot { align-self: flex-start; }
+    .message--user { align-self: flex-end; border-radius: 13px 4px 13px 13px; background: #D5F2CB; }
+    .message__time { display: block; margin-top: 4px; color: #607169; font: 9px/1 var(--font-mono); text-align: right; }
+    @keyframes message-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .chat__controls { display: grid; gap: 7px; margin-top: auto; }
+    .chat__hint { color: var(--ink-soft); font-size: 10px; line-height: 1.4; }
+    .choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+    .choice { min-height: 42px; padding: 7px 8px; border: 1px solid rgba(36,129,204,.27); border-radius: 8px; background: rgba(255,255,255,.96); color: #1773B8; font-size: 10px; line-height: 1.3; text-align: center; cursor: pointer; transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease; }
+    .choice:active { transform: translateY(1px); }
+    .choice:focus-visible, .chat-input:focus-visible, .text-action:focus-visible, .cta:focus-visible, .top__nav a:focus-visible, .wordmark:focus-visible, .footer a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .chat-input-row { display: grid; grid-template-columns: minmax(0, 1fr) 44px; gap: 6px; }
+    .chat-input { width: 100%; min-width: 0; min-height: 44px; padding: 9px 12px; border: 1px solid #D7DCE0; border-radius: 18px; background: #FFFFFF; color: #172126; font: 13px/1.3 var(--font-text); }
+    .chat-input::placeholder { color: #626C73; opacity: 1; }
+    .chat-input--invalid { border-color: #A32620; }
+    .send { min-width: 44px; min-height: 44px; border: 1px solid #2481CC; border-radius: 50%; background: #2481CC; color: #FFFFFF; font-size: 17px; cursor: pointer; }
+    .phone__composer { display: grid; flex: none; grid-template-columns: 34px minmax(0,1fr) 28px; align-items: center; gap: 6px; min-height: 48px; padding: 2px 10px 6px; background: #F7F8F9; }
+    .composer__icon { display: grid; place-items: center; width: 30px; height: 34px; color: #2481CC; font-size: 22px; }
+    .composer__field { display: flex; align-items: center; height: 34px; padding: 0 12px; border: 1px solid #E0E3E5; border-radius: 18px; background: #FFFFFF; color: #626C73; font-size: 11px; }
+    .composer__mic { display: grid; place-items: center; width: 28px; height: 34px; color: #2481CC; font-size: 18px; }
+    .phone__home { align-self: center; flex: none; width: 104px; height: 4px; margin: 5px 0 7px; border-radius: 4px; background: #171719; }
+    .text-action { justify-self: start; min-height: 40px; padding: 8px 0; border: 0; background: transparent; color: var(--accent); font-size: 11px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+    .chat__error { min-height: 16px; color: #8C211B; font-size: 10px; line-height: 1.4; }
+    .phone__side-label { color: var(--ink-soft); font: 9px/1.4 var(--font-mono); letter-spacing: .07em; text-align: center; writing-mode: vertical-rl; transform: rotate(180deg); }
+    .chat-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; clip-path: inset(50%); }
+
+    .section { padding-block: clamp(58px, 8vw, 104px); border-top: 1px solid var(--line); }
+    .section__head { display: grid; grid-template-columns: minmax(130px, 2fr) minmax(0, 7fr) minmax(180px, 3fr); gap: clamp(16px, 3vw, 40px); align-items: start; margin-bottom: 34px; }
+    .section__head h2 { max-width: 640px; font-size: clamp(2rem, 4.3vw, 3.6rem); line-height: 1.03; letter-spacing: -.035em; }
+    .section__head p:last-child { max-width: 34ch; color: var(--ink-soft); font-size: 13px; line-height: 1.55; }
+    .steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line-strong); }
+    .step { min-height: 150px; padding: 16px 18px 18px 0; }
+    .step + .step { padding-left: 18px; border-left: 1px solid var(--line); }
+    .step__no { color: var(--accent); font: 11px/1 var(--font-mono); }
+    .step h3 { margin-top: 18px; font-size: 16px; font-weight: 500; }
+    .step p { margin-top: 7px; color: var(--ink-soft); font-size: 12px; line-height: 1.5; }
+
+    .admin { background: #E4EBE6; }
+    .admin__grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(28px, 7vw, 88px); align-items: start; }
+    .admin__copy h2 { max-width: 520px; font-size: clamp(2rem, 4.3vw, 3.6rem); line-height: 1.02; letter-spacing: -.035em; }
+    .admin__copy p { max-width: 48ch; margin-top: 16px; color: var(--ink-soft); font-size: 14px; line-height: 1.6; }
+    .admin__badge { display: inline-flex; margin-top: 22px; padding: 6px 8px; border: 1px solid var(--line-strong); color: var(--ink-soft); font: 10px/1.2 var(--font-mono); text-transform: uppercase; }
+    .preview { border: 1px solid var(--line-strong); background: #F8FAF8; }
+    .preview__top { display: flex; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+    .preview__top strong { font-size: 13px; font-weight: 600; }
+    .preview__top span { color: var(--ink-soft); font: 10px/1.4 var(--font-mono); }
+    .preview__body { padding: 16px; }
+    .preview__empty { color: var(--ink-soft); font-size: 13px; line-height: 1.6; }
+    .preview__list { display: grid; grid-template-columns: minmax(120px, 1fr) minmax(0, 2fr); margin: 0; }
+    .preview__list dt, .preview__list dd { margin: 0; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; }
+    .preview__list dt { color: var(--ink-soft); }
+    .preview__list dd { color: var(--ink); font-weight: 500; }
+    .preview__foot { padding: 12px 16px; color: var(--ink-soft); font: 10px/1.5 var(--font-mono); }
+
+    .scope__grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(28px, 7vw, 88px); }
+    .scope h2 { font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.02; letter-spacing: -.035em; }
+    .scope__note { margin-top: 14px; color: var(--ink-soft); font-size: 12px; line-height: 1.55; }
+    .scope__list { list-style: none; border-top: 1px solid var(--line-strong); }
+    .scope__list li { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 12px; padding-block: 15px; border-bottom: 1px solid var(--line); font-size: 14px; line-height: 1.5; }
+    .scope__list span { color: var(--accent); font: 11px/1.5 var(--font-mono); }
+
+    .bottom-cta { padding-block: 36px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .bottom-cta__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
+    .bottom-cta h2 { font-size: clamp(1.5rem, 3vw, 2.3rem); letter-spacing: -.03em; }
+    .bottom-cta p { margin-top: 6px; color: var(--ink-soft); font-size: 12px; }
+    .cta { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 18px; border: 1px solid var(--accent); background: var(--accent); color: #FFFFFF; font-size: 13px; font-weight: 500; text-decoration: none; }
+    .footer { padding-block: 18px 28px; }
+    .footer__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; color: var(--ink-soft); font-size: 10px; }
+    .footer a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); }
+
+    @media (hover: hover) and (pointer: fine) {
+      .choice:hover { border-color: var(--accent); background: var(--accent); color: #FFFFFF; }
+      .send:hover, .cta:hover { background: #15583B; }
+    }
+    @media (max-width: 900px) {
+      .hero__grid { grid-template-columns: minmax(0, 5fr) minmax(320px, 7fr); gap: 24px; }
+      .phone-wrap { grid-template-columns: minmax(0, 1fr); }
+      .phone__side-label { display: none; }
+      .section__head { grid-template-columns: minmax(110px, 2fr) minmax(0, 7fr); }
+      .section__head > p:last-child { grid-column: 2; }
+      .step { padding-right: 12px; }
+      .step + .step { padding-left: 12px; }
+    }
+    @media (max-height: 740px) and (min-width: 681px) { .phone-wrap { zoom: .78; } }
+    @media (min-height: 741px) and (max-height: 800px) and (min-width: 681px) { .phone-wrap { zoom: .86; } }
+    @media (min-height: 801px) and (max-height: 860px) and (min-width: 681px) { .phone-wrap { zoom: .94; } }
+    @media (max-width: 680px) {
+      .top__inner { min-height: 62px; }
+      .top__nav { gap: 8px; }
+      .top__nav a { font-size: 11px; }
+      .top__nav a:nth-child(2) { display: none; }
+      .top__right { gap: 8px; }
+      .hero { padding-top: 38px; }
+      .hero__grid { grid-template-columns: 1fr; gap: 30px; }
+      .hero h1 { max-width: 520px; font-size: clamp(2.65rem, 10vw, 4rem); }
+      .hero__lead { font-size: 15px; }
+      .phone-wrap { width: min(100%, 430px); justify-self: center; }
+      .phone { padding: 8px; border-radius: 43px; }
+      .phone__screen { height: 670px; border-radius: 34px; }
+      .section__head { grid-template-columns: 1fr; gap: 12px; }
+      .section__head > p:last-child { grid-column: auto; }
+      .section__head h2 { font-size: clamp(2rem, 9vw, 3rem); }
+      .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .step { min-height: 140px; }
+      .step:nth-child(3) { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
+      .step:nth-child(4) { border-top: 1px solid var(--line); }
+      .admin__grid, .scope__grid { grid-template-columns: 1fr; gap: 28px; }
+      .admin__copy h2 { font-size: clamp(2rem, 9vw, 3rem); }
+      .scope h2 { font-size: clamp(2rem, 9vw, 3rem); }
+    }
+    @media (max-width: 420px) {
+      .wordmark__kind { font-size: 8px; }
+      .demo-tag { padding: 5px 6px; font-size: 9px; }
+      .top__nav a { font-size: 10px; }
+      .hero h1 { font-size: clamp(2.55rem, 10.4vw, 3.3rem); }
+      .hero__facts { gap: 6px 12px; font-size: 10px; }
+      .phone__screen { height: 650px; border-radius: 31px; }
+      .phone__bar { grid-template-columns: 54px minmax(0,1fr) 30px; padding-inline: 8px; }
+      .phone__back { font-size: 11px; }
+      .phone__back small { display: none; }
+      .chat { padding-inline: 8px; }
+      .choice { padding: 7px 6px; font-size: 10px; }
+      .preview__list { grid-template-columns: 105px minmax(0, 1fr); }
+      .preview__list dt, .preview__list dd { font-size: 12px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">К содержимому</a>
+  <header class="top">
+    <div class="ui-wrap top__inner">
+      <a class="wordmark" href="#top"><span class="wordmark__symbol" aria-hidden="true">У</span><span><span class="wordmark__name">Улыбка</span><span class="wordmark__kind">стоматология · демо</span></span></a>
+      <div class="top__right">
+        <span class="demo-tag">Вымышленная клиника</span>
+        <nav class="top__nav" aria-label="Навигация"><a href="#steps">Сценарий</a><a href="#administrator">Администратору</a></nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="ui-wrap hero__grid">
+        <div class="hero__copy">
+          <p class="ui-label eyebrow">Демо продукта · запись в стоматологию</p>
+          <h1 id="hero-title">Запись на приём — прямо в чате</h1>
+          <p class="hero__lead">Проверьте сценарий сами: выберите услугу и время, введите демонстрационные имя и телефон. В конце увидите обращение, подготовленное для администратора.</p>
+          <div class="hero__facts" aria-label="Состав сценария">
+            <span><b>04</b> услуги</span><span><b>04</b> окна</span><span>имя + телефон</span><span>без отправки</span>
+          </div>
+          <p class="hero__disclaimer">Клиника, услуги и расписание вымышлены. Экран стилизован под iPhone и Telegram, но не является их приложением. Это локальная симуляция, не реальная запись и не медицинская консультация.</p>
+          <p class="hero__preview"><a href="variant-b.html">Посмотреть альтернативную композицию B →</a></p>
+        </div>
+
+        <div class="phone-wrap" aria-label="Интерактивная демонстрация чат-бота">
+          <section class="phone" aria-label="Макет телефона с демонстрационным чатом">
+            <div class="phone__screen">
+              <div class="phone__status" aria-label="Строка состояния телефона, демонстрация"><span>9:41</span><span class="phone__island" aria-hidden="true"></span><span class="phone__indicators" aria-hidden="true"><span class="phone__signal"><i></i><i></i><i></i><i></i></span><span>5G</span><span class="phone__battery"></span></span></div>
+              <header class="phone__bar">
+                <span class="phone__back" aria-hidden="true"><b>‹</b><small>Чаты</small></span>
+                <span class="phone__identity"><span class="phone__avatar" aria-hidden="true">У</span><span><span class="phone__title">Улыбка · запись</span><span class="phone__sub">бот · Telegram · демо</span></span></span>
+                <span class="phone__actions" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 4.5h3.2l1.5 4-2 1.7a14.7 14.7 0 0 0 6.1 6.1l1.7-2 4 1.5V19a1.5 1.5 0 0 1-1.6 1.5A15.4 15.4 0 0 1 3.5 6.1 1.5 1.5 0 0 1 5 4.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+              </header>
+              <div class="chat">
+                <p class="chat__notice">Только пример. Не вводите настоящие контактные данные.</p>
+                <div class="chat__log" id="chat-log" aria-label="Сообщения демонстрационного бота" aria-live="polite" aria-relevant="additions text"></div>
+                <div class="chat__controls" id="chat-controls"></div>
+              </div>
+              <div class="phone__composer" aria-hidden="true"><span class="composer__icon">＋</span><span class="composer__field">Сообщение</span><span class="composer__mic">◖</span></div>
+              <span class="phone__home" aria-hidden="true"></span>
+            </div>
+          </section>
+          <p class="phone__side-label" aria-hidden="true">ИНТЕРАКТИВНАЯ СИМУЛЯЦИЯ · ДАННЫЕ НЕ СОХРАНЯЮТСЯ</p>
+        </div>
+      </div>
+      <p class="chat-status" id="chat-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="section" id="steps" aria-labelledby="steps-title">
+      <div class="ui-wrap">
+        <header class="section__head">
+          <p class="ui-label section-index">01 — Порядок диалога</p>
+          <h2 id="steps-title">От выбора услуги до готового обращения</h2>
+          <p>Сценарий можно пройти до конца, вернуться к времени и изменить выбор.</p>
+        </header>
+        <div class="steps">
+          <article class="step"><span class="step__no">01 / 04</span><h3>Услуга</h3><p>Один из четырёх демонстрационных вариантов.</p></article>
+          <article class="step"><span class="step__no">02 / 04</span><h3>Время</h3><p>Четыре условных окна; выбор можно поменять.</p></article>
+          <article class="step"><span class="step__no">03 / 04</span><h3>Контакты</h3><p>Проверка демонстрационных имени и телефона.</p></article>
+          <article class="step"><span class="step__no">04 / 04</span><h3>Подтверждение</h3><p>Предпросмотр обращения для администратора.</p></article>
+        </div>
+        <p class="hero__disclaimer">Время, услуги и персонажи — условные демонстрационные данные. Они не описывают услуги реальной клиники.</p>
+      </div>
+    </section>
+
+    <section class="section admin" id="administrator" aria-labelledby="admin-title">
+      <div class="ui-wrap admin__grid">
+        <div class="admin__copy">
+          <p class="ui-label section-index">02 — Итог диалога</p>
+          <h2 id="admin-title">Что увидит администратор</h2>
+          <p>После прохождения чата ниже появится собранный предпросмотр обращения. Это пример структуры заявки, а не отправленное сообщение: данные остаются только в памяти открытой страницы.</p>
+          <span class="admin__badge">Предпросмотр · локально</span>
+        </div>
+        <section class="preview" aria-label="Предпросмотр обращения администратору" aria-live="polite" aria-atomic="true">
+          <div class="preview__top"><strong>Новое обращение</strong><span id="preview-state">ОЖИДАЕТ ДЕМО</span></div>
+          <div class="preview__body" id="preview-body"><p class="preview__empty">Пройдите диалог в телефоне — здесь появится пример обращения.</p></div>
+          <p class="preview__foot">Не отправлено · не сохраняется · не является записью</p>
+        </section>
+      </div>
+    </section>
+
+    <section class="section scope" aria-labelledby="scope-title">
+      <div class="ui-wrap scope__grid">
+        <div><p class="ui-label section-index">03 — Состав демонстрации</p><h2 id="scope-title">Что входит в пример</h2><p class="scope__note">Сумму и сроки не указываем: цена пакета не подтверждена владельцем.</p></div>
+        <ul class="scope__list">
+          <li><span>01</span>Сценарий записи: услуга, время, проверка имени и телефона.</li>
+          <li><span>02</span>Возврат к выбору времени и редактирование демонстрационных данных.</li>
+          <li><span>03</span>Предпросмотр обращения для администратора.</li>
+          <li><span>04</span>Локальный интерфейс без серверной отправки и хранилищ браузера.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="bottom-cta" aria-label="Начать демонстрацию">
+      <div class="ui-wrap bottom-cta__inner"><div><h2>Попробуйте сценарий записи</h2><p>Начните с выбора услуги в чате выше. Только демонстрационные данные.</p></div><a class="cta" href="#top">К чату ↑</a></div>
+    </section>
+  </main>
+  <footer class="footer"><div class="ui-wrap footer__inner"><span>Демо · стоматология «Улыбка» — вымышленная</span><span>Не является медицинской рекомендацией</span><a href="#top">К началу ↑</a></div></footer>
+
+  <script>
+    (function () {
+      'use strict';
+      var services = ['Консультация', 'Профгигиена', 'Лечение кариеса', 'Детский приём'];
+      var times = ['10:00', '12:30', '15:00', '17:30'];
+      var state = { step: 'service', service: '', time: '', name: '', phone: '' };
+      var log = document.getElementById('chat-log');
+      var controls = document.getElementById('chat-controls');
+      var status = document.getElementById('chat-status');
+      var previewBody = document.getElementById('preview-body');
+      var previewState = document.getElementById('preview-state');
+
+      function announce(text) { status.textContent = text; }
+      function addMessage(text, who) {
+        var message = document.createElement('div');
+        message.className = 'message message--' + who;
+        message.textContent = text;
+        log.appendChild(message);
+        log.scrollTop = log.scrollHeight;
+      }
+      function clearControls() { controls.replaceChildren(); }
+      function button(label, action, modifier) {
+        var node = document.createElement('button');
+        node.type = 'button';
+        node.className = modifier || 'choice';
+        node.textContent = label;
+        node.addEventListener('click', action);
+        return node;
+      }
+      function showChoices(items, handler, hint) {
+        clearControls();
+        if (hint) {
+          var note = document.createElement('p');
+          note.className = 'chat__hint';
+          note.textContent = hint;
+          controls.appendChild(note);
+        }
+        var grid = document.createElement('div');
+        grid.className = 'choices';
+        items.forEach(function (item, index) {
+          grid.appendChild(button(item, function () { handler(item, index); }));
+        });
+        controls.appendChild(grid);
+      }
+      function renderService() {
+        state.step = 'service';
+        addMessage('Здравствуйте! Выберите услугу для демонстрации записи.', 'bot');
+        showChoices(services, function (value) {
+          state.service = value;
+          addMessage(value, 'user');
+          renderTime();
+        }, 'Шаг 1 из 4 · демонстрационные услуги');
+      }
+      function renderTime() {
+        state.step = 'time';
+        addMessage('Для «' + state.service + '» выберите одно из условных окон.', 'bot');
+        showChoices(times, function (value) {
+          state.time = value;
+          addMessage(value + ' · демо', 'user');
+          renderName();
+        }, 'Шаг 2 из 4 · все окна условные');
+      }
+      function renderTextInput(title, placeholder, inputMode, submitLabel, onSubmit, hint) {
+        clearControls();
+        var note = document.createElement('p');
+        note.className = 'chat__hint';
+        note.textContent = hint;
+        controls.appendChild(note);
+        var form = document.createElement('form');
+        form.className = 'chat-input-row';
+        form.noValidate = true;
+        var input = document.createElement('input');
+        input.className = 'chat-input';
+        input.type = 'text';
+        input.name = 'demo-' + title;
+        input.autocomplete = 'off';
+        input.placeholder = placeholder;
+        input.setAttribute('aria-label', title + ' · только пример');
+        if (inputMode) input.inputMode = inputMode;
+        var send = document.createElement('button');
+        send.className = 'send';
+        send.type = 'submit';
+        send.setAttribute('aria-label', submitLabel);
+        send.textContent = '→';
+        var error = document.createElement('p');
+        error.className = 'chat__error';
+        error.setAttribute('aria-live', 'polite');
+        form.append(input, send);
+        controls.append(form, error);
+        form.addEventListener('submit', function (event) {
+          event.preventDefault();
+          var result = onSubmit(input.value.trim());
+          if (!result.ok) {
+            error.textContent = result.message;
+            input.classList.add('chat-input--invalid');
+            input.setAttribute('aria-invalid', 'true');
+            input.setAttribute('aria-describedby', 'chat-input-error');
+            error.id = 'chat-input-error';
+            input.focus();
+            announce(result.message);
+            return;
+          }
+          error.textContent = '';
+          addMessage(result.display, 'user');
+          result.next();
+        });
+        input.addEventListener('input', function () {
+          input.classList.remove('chat-input--invalid');
+          input.removeAttribute('aria-invalid');
+          input.removeAttribute('aria-describedby');
+          error.textContent = '';
+        });
+        input.focus();
+      }
+      function renderName() {
+        state.step = 'name';
+        addMessage('Как к вам обращаться? Введите любое демонстрационное имя.', 'bot');
+        renderTextInput('имя', 'Например, Алексей', 'text', 'Продолжить к телефону', function (value) {
+          var letters = value.replace(/[\s'’ʼ-]/g, '');
+          if (!/^[\p{L}]{2,}$/u.test(letters)) return { ok: false, message: 'Введите имя хотя бы из двух букв. Это только пример.' };
+          state.name = value;
+          return { ok: true, display: value, next: renderPhone };
+        }, 'Шаг 3 из 4 · не вводите настоящее имя');
+      }
+      function renderPhone() {
+        state.step = 'phone';
+        addMessage('Укажите номер в тестовом формате. Не вводите свой настоящий телефон.', 'bot');
+        renderTextInput('телефон', '+7 900 000-00-00', 'tel', 'Показать итог', function (value) {
+          var digits = value.replace(/\D/g, '');
+          var valid = (digits.length === 11 && (digits.charAt(0) === '7' || digits.charAt(0) === '8')) || digits.length === 10;
+          if (!valid) return { ok: false, message: 'Проверьте формат: введите 10 цифр или 11 цифр с 7/8. Только тестовые данные.' };
+          var national = digits.slice(-10);
+          state.phone = '+7 ' + national.slice(0, 3) + ' ' + national.slice(3, 6) + '-' + national.slice(6, 8) + '-' + national.slice(8);
+          return { ok: true, display: 'Демонстрационный номер принят', next: renderConfirmation };
+        }, 'Шаг 4 из 4 · номер проверяется только в браузере');
+      }
+      function renderPreview() {
+        previewState.textContent = 'ДЕМО · НЕ ОТПРАВЛЕНО';
+        previewBody.replaceChildren();
+        var list = document.createElement('dl');
+        list.className = 'preview__list';
+        [['Услуга', state.service], ['Время', state.time + ' · условное'], ['Имя', state.name + ' · демо'], ['Телефон', state.phone + ' · демо']].forEach(function (pair) {
+          var term = document.createElement('dt');
+          term.textContent = pair[0];
+          var value = document.createElement('dd');
+          value.textContent = pair[1];
+          list.append(term, value);
+        });
+        previewBody.appendChild(list);
+      }
+      function renderConfirmation() {
+        state.step = 'done';
+        renderPreview();
+        addMessage('Готово. Это локальный предпросмотр — реальная запись не создана.', 'bot');
+        clearControls();
+        var note = document.createElement('p');
+        note.className = 'chat__hint';
+        note.textContent = 'Обращение выше — пример того, что могло бы увидеть администратор.';
+        controls.appendChild(note);
+        var actions = document.createElement('div');
+        actions.className = 'choices';
+        actions.appendChild(button('Изменить время', function () {
+          state.step = 'edit-time';
+          addMessage('Хочу изменить время', 'user');
+          renderEditTime();
+        }));
+        actions.appendChild(button('Начать заново', reset, 'choice'));
+        controls.appendChild(actions);
+        announce('Демо завершено. Обращение показано локально и не отправлено.');
+      }
+      function renderEditTime() {
+        addMessage('Выберите другое условное время.', 'bot');
+        showChoices(times.filter(function (time) { return time !== state.time; }), function (value) {
+          state.time = value;
+          addMessage(value + ' · демо', 'user');
+          renderPreview();
+          addMessage('Время в предпросмотре изменено. Запрос никуда не отправлен.', 'bot');
+          renderConfirmationActions();
+          announce('Время изменено в локальном предпросмотре.');
+        }, 'Изменить можно без повторного ввода контактов');
+      }
+      function renderConfirmationActions() {
+        clearControls();
+        var actions = document.createElement('div');
+        actions.className = 'choices';
+        actions.appendChild(button('Изменить время', function () {
+          addMessage('Хочу изменить время', 'user');
+          renderEditTime();
+        }));
+        actions.appendChild(button('Начать заново', reset));
+        controls.appendChild(actions);
+      }
+      function reset() {
+        state = { step: 'service', service: '', time: '', name: '', phone: '' };
+        log.replaceChildren();
+        previewState.textContent = 'ОЖИДАЕТ ДЕМО';
+        previewBody.replaceChildren();
+        var empty = document.createElement('p');
+        empty.className = 'preview__empty';
+        empty.textContent = 'Пройдите диалог в телефоне — здесь появится пример обращения.';
+        previewBody.appendChild(empty);
+        announce('Демонстрация перезапущена.');
+        renderService();
+      }
+      renderService();
+    }());
+  </script>
+</body>
+</html>

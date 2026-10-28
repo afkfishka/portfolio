@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="build">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b0d12">
+<title>Игорь — сайты и Telegram-боты для малого бизнеса</title>
+<meta name="description" content="Сайты для одной услуги, Telegram-боты записи и передача заявок с сайта в Telegram. Работаю по всей России.">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/russo-one@5.3.0/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/onest@5.3.1/index.css">
+<link rel="stylesheet" href="assets/base.css">
+<style>
+  html[data-theme] {
+    color-scheme: dark;
+    --bg: #0B0D12;
+    --surface: #171A21;
+    --ink: #F4F1EA;
+    --ink-soft: #B9BFCC;
+    --line: rgba(244, 241, 234, .18);
+    --line-strong: rgba(244, 241, 234, .4);
+    --accent: #E9FF2E;
+    --accent-ink: #0B0D12;
+    --spot-rgb: 233 255 46;
+    --font-display: "Russo One", "Arial Black", sans-serif;
+    --font-text: "Onest Variable", system-ui, sans-serif;
+    --font-mono: "Onest Variable", system-ui, sans-serif;
+    --display-weight: 400;
+    --display-tracking: -.015em;
+    --display-leading: 1;
+    --label-tracking: .09em;
+    --wrap: 1380px;
+    --gutter: clamp(20px, 5vw, 72px);
+    --radius: 0px;
+    --radius-lg: 0px;
+  }
+
+  body { background: var(--bg); }
+  .site-head { position: relative; z-index: 5; border-bottom: 1px solid var(--line); }
+  .site-head__inner { min-height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .wordmark { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; text-decoration: none; }
+  .wordmark__seal { display: grid; place-items: center; width: 38px; aspect-ratio: 1; background: var(--accent); color: var(--accent-ink); font-family: var(--font-display); font-size: 14px; font-weight: 400; letter-spacing: -.04em; transform: rotate(-5deg); }
+  .wordmark__name { font-family: var(--font-text); font-size: 11px; font-weight: 600; line-height: 1.45; letter-spacing: .015em; }
+  .head-nav { display: flex; align-items: center; gap: clamp(18px, 3vw, 38px); }
+  .head-nav a { min-height: 44px; display: inline-flex; align-items: center; color: var(--ink-soft); font-size: 13px; text-decoration: none; transition: color 180ms ease; }
+  .head-nav .head-nav__contact { color: var(--ink); border-bottom: 1px solid var(--accent); }
+
+  .hero { position: relative; overflow: clip; padding-block: clamp(56px, 8vw, 108px) clamp(38px, 6vw, 72px); }
+  .hero::before { content: ""; position: absolute; z-index: -1; width: min(54vw, 760px); aspect-ratio: 1; top: -36%; right: -15%; border: 1px solid rgba(233,255,46,.12); border-radius: 50%; box-shadow: 0 0 0 64px rgba(233,255,46,.025), 0 0 0 128px rgba(233,255,46,.018); pointer-events: none; }
+  .hero__grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(280px, 5fr); gap: clamp(34px, 6vw, 88px); align-items: center; }
+  .hero__copy { min-width: 0; }
+  .hero__eyebrow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .hero__eyebrow .ui-label { color: var(--accent); }
+  .hero__title { max-width: 850px; margin-top: clamp(26px, 4vw, 46px); font-size: clamp(3.5rem, 8.6vw, 7.8rem); font-weight: 400; line-height: .98; letter-spacing: -.015em; }
+  .hero__title span { display: block; color: var(--accent); font-weight: 400; }
+  .hero__lead { max-width: 54ch; margin-top: 26px; color: var(--ink-soft); font-size: clamp(1rem, 1.45vw, 1.2rem); line-height: 1.55; }
+  .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; margin-top: 30px; }
+  .hero .ui-btn--solid { min-height: 52px; padding-inline: 22px; font-weight: 600; }
+  .hero__aside-note { margin-top: 13px; color: #A7AEBB; font-family: var(--font-mono); font-size: 10px; letter-spacing: .04em; }
+  .hero-art { min-width: 0; padding: 12px 0; }
+  .service-index { border-top: 1px solid var(--line-strong); }
+  .service-index__head { display: flex; justify-content: space-between; gap: 16px; padding-block: 14px; color: var(--ink-soft); font-family: var(--font-text); font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .service-index__row { display: grid; grid-template-columns: 48px minmax(0, 1fr) 26px; align-items: center; gap: 12px; min-height: 82px; border-top: 1px solid var(--line); text-decoration: none; transition: color 180ms ease, padding 180ms ease; }
+  .service-index__row:last-child { border-bottom: 1px solid var(--line); }
+  .service-index__no { color: var(--accent); font-family: var(--font-text); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .service-index__name { font-family: var(--font-text); font-size: clamp(14px, 1.25vw, 17px); font-weight: 600; line-height: 1.35; letter-spacing: -.01em; }
+  .service-index__arrow { color: var(--accent); font-size: 19px; text-align: right; transition: transform 180ms ease; }
+  .hero__facts { display: flex; flex-wrap: wrap; gap: 10px 26px; margin-top: clamp(38px, 5vw, 58px); padding-top: 17px; border-top: 1px solid var(--line); }
+  .hero__facts span { display: inline-flex; align-items: center; gap: 9px; color: var(--ink-soft); font-family: var(--font-text); font-size: 11px; font-weight: 500; letter-spacing: .01em; }
+  .hero__facts span::before { content: ""; width: 7px; height: 7px; flex: none; background: var(--accent); transform: rotate(45deg); }
+
+  .section { padding-block: clamp(64px, 9vw, 116px); }
+  .section-head { display: grid; grid-template-columns: minmax(120px, 3fr) minmax(0, 9fr); gap: 24px; align-items: start; margin-bottom: clamp(30px, 5vw, 56px); }
+  .section-head__meta { padding-top: 8px; }
+  .section-head__meta .ui-label { color: var(--accent); }
+  .section-head__title { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 18px 32px; }
+  .section-head__title h2 { max-width: 760px; font-size: clamp(2rem, 4.6vw, 4.4rem); font-weight: 400; line-height: 1.04; letter-spacing: -.015em; }
+  .section-head__title p { max-width: 48ch; color: var(--ink-soft); font-size: 14px; line-height: 1.6; }
+
+  .work-section { background: #F4F1EA; color: #0B0D12; }
+  .work-section .section-head__meta .ui-label { color: #394D00; }
+  .work-section .section-head__title p { color: #50525A; }
+  .work-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.1vw, 28px); }
+  .work-card { min-width: 0; padding: 0; border: 0; background: transparent; }
+  .work-card__image { aspect-ratio: 1.12; overflow: hidden; background: #DEDCD5; }
+  .work-card__image img { transition: transform 600ms cubic-bezier(.2,.7,.2,1); }
+  .work-card__top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 14px; align-items: center; margin-top: 16px; }
+  .work-card__category, .work-card__status { font-family: var(--font-text); font-size: 10px; font-weight: 600; letter-spacing: .035em; text-transform: uppercase; }
+  .work-card__category { color: #394D00; }
+  .work-card__status { color: #55565D; }
+   .work-card__title { margin-top: 13px; font-family: var(--font-text); font-size: clamp(1.05rem, 1.5vw, 1.35rem); font-weight: 600; line-height: 1.3; letter-spacing: -.015em; }
+   .work-card__title a { color: inherit; text-decoration-color: #7B7D78; text-underline-offset: 4px; }
+   .work-card__title a:focus-visible { outline: 2px solid #394D00; outline-offset: 4px; }
+  .work-card__desc { margin-top: 8px; color: #50525A; font-size: 13px; line-height: 1.55; }
+  .work-card__foot { display: flex; justify-content: space-between; gap: 10px; margin-top: 20px; padding-top: 11px; border-top: 1px solid rgba(11,13,18,.2); color: #55565D; font-family: var(--font-text); font-size: 10px; line-height: 1.5; }
+  .showcase-note { max-width: 78ch; margin-top: 28px; color: #50525A; }
+
+  .services { list-style: none; border-top: 1px solid var(--line-strong); }
+  .service { display: grid; grid-template-columns: 64px minmax(0, 5fr) minmax(180px, 4fr) 34px; gap: clamp(14px, 2.5vw, 34px); align-items: center; padding-block: clamp(22px, 3.2vw, 34px); border-bottom: 1px solid var(--line); transition: padding-inline 200ms ease, background-color 200ms ease; }
+  .service__no { color: var(--accent); font-family: var(--font-text); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .service__title { font-family: var(--font-text); font-size: clamp(1.2rem, 2.6vw, 2.25rem); font-weight: 600; line-height: 1.25; letter-spacing: -.02em; }
+  .service__desc { max-width: 42ch; color: var(--ink-soft); font-size: 13px; line-height: 1.6; }
+  .service__mark { color: var(--accent); font-size: 22px; text-align: right; }
+  .custom { display: grid; grid-template-columns: minmax(0, 7fr) minmax(180px, 5fr); gap: 28px; align-items: center; margin-top: clamp(34px, 5vw, 58px); padding: clamp(22px, 3.5vw, 40px); background: var(--surface); border-left: 3px solid var(--accent); }
+  .custom__title { font-family: var(--font-text); font-size: clamp(1.15rem, 2vw, 1.65rem); font-weight: 600; letter-spacing: -.015em; }
+  .custom__text { max-width: 58ch; margin-top: 9px; color: var(--ink-soft); font-size: 13px; }
+  .custom__cta { justify-self: end; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line-strong); }
+  .step { padding: 22px clamp(14px, 2vw, 26px) 0 0; }
+  .step + .step { padding-left: clamp(14px, 2vw, 26px); border-left: 1px solid var(--line); }
+  .step__no { color: var(--accent); font-family: var(--font-text); font-size: 11px; font-weight: 600; letter-spacing: .035em; text-transform: uppercase; }
+  .step__title { margin-top: 22px; font-size: 16px; font-weight: 600; }
+  .step__desc { max-width: 36ch; margin-top: 8px; color: var(--ink-soft); font-size: 13px; line-height: 1.6; }
+
+  .contact { padding-block: clamp(66px, 10vw, 128px); background: #F4F1EA; color: #0B0D12; border-top: 1px solid rgba(11,13,18,.16); }
+  .contact__grid { display: grid; grid-template-columns: minmax(0, 8fr) minmax(190px, 4fr); gap: 32px; align-items: end; }
+  .contact .ui-label { color: #50525A; }
+  .contact__title { max-width: 840px; margin-top: 18px; font-family: var(--font-display); font-size: clamp(2.5rem, 7vw, 6rem); font-weight: 400; line-height: 1.02; letter-spacing: -.015em; }
+  .contact__title em { color: #0B0D12; font-style: normal; text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: .08em; text-underline-offset: .12em; }
+  .contact__text { max-width: 48ch; margin-top: 18px; color: #50525A; font-size: 14px; }
+  .contact__action { justify-self: end; }
+  .contact__action .ui-btn { --btn-bg: var(--accent); --btn-ink: #0B0D12; --btn-line: var(--accent); min-width: 220px; min-height: 54px; font-weight: 600; }
+  .contact__action .ui-btn span { color: #0B0D12; }
+  .contact__hint { margin-top: 12px; color: #50525A; font-family: var(--font-text); font-size: 10px; font-weight: 600; letter-spacing: .035em; text-align: center; }
+
+  .site-foot { padding-block: 22px; border-top: 1px solid rgba(244,241,234,.2); background: #08090D; color: #B9BFCC; }
+  .site-foot__inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 24px; font-family: var(--font-text); font-size: 10px; font-weight: 500; letter-spacing: .02em; }
+  .site-foot a { color: var(--ink); text-decoration-color: var(--accent); text-underline-offset: 4px; }
+
+  @media (hover: hover) and (pointer: fine) {
+    .head-nav a:hover { color: var(--accent); }
+    .head-nav .head-nav__contact:hover { color: var(--accent); }
+    .service-index__row:hover { padding-inline: 8px; color: var(--accent); }
+    .service-index__row:hover .service-index__arrow { transform: translate(3px, -3px); }
+    .work-card:hover .work-card__image img { transform: scale(1.035); }
+    .service:hover { padding-inline: 8px; background: rgba(233,255,46,.035); }
+    .contact__action .ui-btn:hover { color: #0B0D12; filter: brightness(.94); }
+  }
+
+  @keyframes intro-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+  .hero__copy, .hero-art { animation: intro-rise 650ms cubic-bezier(.2,.7,.2,1) both; }
+  .hero-art { animation-delay: 90ms; }
+  @media (max-width: 980px) {
+    .hero__grid { grid-template-columns: minmax(0, 1fr); gap: 34px; }
+    .hero-art { width: min(100%, 740px); }
+    .service-index { display: grid; grid-template-columns: 1fr 1fr; }
+    .service-index__head { grid-column: 1 / -1; }
+    .service-index__row { padding-inline: 10px; }
+    .service-index__row:nth-child(2), .service-index__row:nth-child(3) { border-bottom: 1px solid var(--line); }
+    .service-index__row:last-child { grid-column: 1 / -1; }
+    .service-index__row:nth-child(3) { border-right: 0; }
+    .service-index__row:nth-child(2) { border-right: 1px solid var(--line); }
+    .work-grid { grid-template-columns: 1fr 1fr; }
+    .work-card:last-child { grid-column: 1 / -1; }
+    .work-card:last-child .work-card__image { aspect-ratio: 2.15; }
+    .service { grid-template-columns: 48px minmax(0, 5fr) minmax(140px, 4fr) 24px; }
+  }
+  @media (max-width: 700px) {
+    .site-head__inner { min-height: 66px; }
+    .head-nav { gap: 14px; }
+    .head-nav a { font-size: 11px; }
+    .head-nav a:nth-child(3) { display: none; }
+    .hero { padding-top: 48px; }
+    .hero__title { font-size: clamp(3.6rem, 14vw, 5.8rem); }
+    .hero__lead { margin-top: 20px; }
+    .hero__facts { gap: 10px 18px; }
+    .hero__facts span { font-size: 9px; }
+    .section-head { grid-template-columns: 1fr; gap: 12px; }
+    .section-head__title { display: grid; }
+    .work-grid { grid-template-columns: 1fr; gap: 34px; }
+    .work-card:last-child { grid-column: auto; }
+    .work-card:last-child .work-card__image { aspect-ratio: 1.12; }
+    .service { grid-template-columns: 38px minmax(0, 1fr) 24px; gap: 10px 14px; }
+    .service__desc { grid-column: 2; }
+    .service__mark { grid-column: 3; grid-row: 1 / span 2; }
+    .custom, .contact__grid { grid-template-columns: 1fr; }
+    .custom__cta, .contact__action { justify-self: start; }
+    .contact__hint { text-align: left; }
+    .steps { grid-template-columns: 1fr; }
+    .step, .step + .step { padding: 18px 0; border-left: 0; border-bottom: 1px solid var(--line); }
+    .step__title { margin-top: 12px; }
+  }
+  @media (max-width: 420px) {
+    .wordmark__name { font-size: 9px; }
+    .head-nav { gap: 10px; }
+    .head-nav a { font-size: 10px; }
+    .hero__title { font-size: clamp(3.35rem, 14vw, 3.7rem); }
+    .hero__actions { align-items: flex-start; flex-direction: column; gap: 8px; }
+    .service-index { grid-template-columns: 1fr; }
+    .service-index__head { grid-column: auto; }
+    .service-index__row, .service-index__row:nth-child(2), .service-index__row:nth-child(3), .service-index__row:last-child { grid-column: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+    .work-card__foot { font-size: 9px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+<a class="ui-skip" href="#main">Перейти к содержимому</a>
+
+<header class="site-head">
+  <div class="ui-wrap site-head__inner">
+    <a class="wordmark" href="#top">
+      <span class="wordmark__seal" aria-hidden="true">И.</span>
+      <span class="wordmark__name">Игорь<br>digital · Россия</span>
+    </a>
+    <nav class="head-nav" aria-label="Главная навигация">
+      <a href="#projects">Демо</a>
+      <a href="#services">Услуги</a>
+      <a href="#process">Как работаю</a>
+      <a class="head-nav__contact" href="https://t.me/afkfishka" target="_blank" rel="noopener noreferrer">Написать ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top" aria-labelledby="hero-title">
+    <div class="ui-wrap">
+      <div class="hero__grid">
+        <div class="hero__copy">
+          <div class="hero__eyebrow">
+            <span class="ui-label">Независимая разработка</span>
+            <span class="ui-label" aria-hidden="true">/</span>
+            <span class="ui-label">Работаю по всей России</span>
+          </div>
+          <h1 class="ui-h1 hero__title" id="hero-title">Сайты <span>и боты.</span></h1>
+          <p class="hero__lead">Цифровые инструменты для малого бизнеса: сайт для одной услуги, Telegram-бот записи и передача заявок с сайта в Telegram.</p>
+          <div class="hero__actions">
+            <a class="ui-btn ui-btn--solid" href="https://t.me/afkfishka" target="_blank" rel="noopener noreferrer">Обсудить задачу <span aria-hidden="true">↗</span></a>
+            <a class="ui-btn ui-btn--ghost" href="#projects">Смотреть демо <span aria-hidden="true">↓</span></a>
+          </div>
+          <p class="hero__aside-note">Связь напрямую с разработчиком · телефон не публикую</p>
+        </div>
+
+        <div class="hero-art" role="group" aria-label="Три направления работы">
+          <div class="service-index__head"><span>Чем могу помочь</span><span>01—03</span></div>
+          <div class="service-index">
+            <a class="service-index__row" href="#service-site"><span class="service-index__no">01</span><span class="service-index__name">Сайт одной услуги</span><span class="service-index__arrow" aria-hidden="true">↗</span></a>
+            <a class="service-index__row" href="#service-bot"><span class="service-index__no">02</span><span class="service-index__name">Telegram-бот записи</span><span class="service-index__arrow" aria-hidden="true">↗</span></a>
+            <a class="service-index__row" href="#service-leads"><span class="service-index__no">03</span><span class="service-index__name">Заявки с сайта в Telegram</span><span class="service-index__arrow" aria-hidden="true">↗</span></a>
+          </div>
+          <div class="hero__facts" aria-label="Формат работы">
+            <span>Сначала фиксируем задачу</span>
+            <span>Потом выбираем решение</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section work-section" id="projects" aria-labelledby="projects-title">
+    <div class="ui-wrap">
+      <div class="section-head">
+        <div class="section-head__meta"><p class="ui-label">01 — Витрина</p></div>
+        <div class="section-head__title">
+          <h2 class="ui-h2" id="projects-title">Демо-проекты.<br>Не клиентские кейсы.</h2>
+          <p>Показываю направления будущих работ. Компании вымышленные, изображения — иллюстрации, не скриншоты готовых сайтов.</p>
+        </div>
+      </div>
+
+      <div class="work-grid">
+        <article class="ui-card work-card" data-spotlight data-project="salon">
+          <div class="ui-photo-frame work-card__image"><img class="ui-photo" src="assets/salon-thumb.webp" width="800" height="1067" loading="lazy" decoding="async" alt="Иллюстрация парикмахерского зала: мастер стрижёт волосы"></div>
+          <div class="work-card__top"><span class="work-card__category">Сайт · beauty</span><span class="work-card__status">Демо · открыть ↗</span></div>
+          <h3 class="work-card__title"><a href="salon/index.html">Запись в салон без звонка</a></h3>
+          <p class="work-card__desc">Прайс и выбор времени — на одной странице.<br>Локальный сценарий записи без отправки данных.</p>
+          <div class="work-card__foot"><span>Иллюстрация</span><span>Не скриншот</span></div>
+        </article>
+
+        <article class="ui-card work-card" data-spotlight data-project="clinic">
+          <div class="ui-photo-frame work-card__image"><img class="ui-photo" src="assets/clinic-thumb.webp" width="800" height="450" loading="lazy" decoding="async" alt="Иллюстрация клиники: светлая стойка регистрации"></div>
+          <div class="work-card__top"><span class="work-card__category">Telegram · запись</span><span class="work-card__status">Демо · открыть ↗</span></div>
+          <h3 class="work-card__title"><a href="clinic-bot/index.html">Бот для записи на приём</a></h3>
+          <p class="work-card__desc">Выбор услуги и времени в чате-симуляции.<br>В конце — локальный предпросмотр обращения.</p>
+          <div class="work-card__foot"><span>Иллюстрация</span><span>Не скриншот</span></div>
+        </article>
+
+        <article class="ui-card work-card" data-spotlight data-project="build">
+          <div class="ui-photo-frame work-card__image"><img class="ui-photo" src="assets/build-thumb.webp" width="1200" height="900" loading="lazy" decoding="async" alt="Иллюстрация загородного дома на этапе строительства"></div>
+          <div class="work-card__top"><span class="work-card__category">Лендинг · стройка</span><span class="work-card__status">Демо · открыть ↗</span></div>
+          <h3 class="work-card__title"><a href="stroyka/index.html">Лендинг для строительной услуги</a></h3>
+          <p class="work-card__desc">Площадь и комплектация меняют расчёт на экране.<br>Ставки условные; формула показана рядом.</p>
+          <div class="work-card__foot"><span>Иллюстрация</span><span>Не скриншот</span></div>
+        </article>
+      </div>
+      <p class="ui-caption ui-caption--note showcase-note">Все три проекта — демонстрационные; компании вымышленные. Иллюстрации в карточках не являются скриншотами страниц.</p>
+    </div>
+  </section>
+
+  <section class="section" id="services" aria-labelledby="services-title">
+    <div class="ui-wrap">
+      <div class="section-head">
+        <div class="section-head__meta"><p class="ui-label">02 — Услуги</p></div>
+        <div class="section-head__title">
+          <h2 class="ui-h2" id="services-title">Инструмент под задачу.</h2>
+          <p>Сначала разбираемся, что нужно бизнесу. Затем фиксируем объём и выбираем подходящий формат.</p>
+        </div>
+      </div>
+
+      <ol class="services">
+        <li class="service" id="service-site"><span class="service__no">01 / WEB</span><h3 class="service__title">Сайт для одной услуги</h3><p class="service__desc">Объясняет предложение и ведёт к одному понятному действию: написать, позвонить или оставить заявку.</p><span class="service__mark" aria-hidden="true">↗</span></li>
+        <li class="service" id="service-bot"><span class="service__no">02 / TG</span><h3 class="service__title">Telegram-бот записи</h3><p class="service__desc">Помогает клиенту выбрать услугу и время, оставить контакт и передать обращение бизнесу.</p><span class="service__mark" aria-hidden="true">↗</span></li>
+        <li class="service" id="service-leads"><span class="service__no">03 / WEB → TG</span><h3 class="service__title">Передача заявок</h3><p class="service__desc">Связывает форму на сайте с Telegram, чтобы бизнес получал обращения в выбранном канале.</p><span class="service__mark" aria-hidden="true">↗</span></li>
+      </ol>
+
+      <div class="custom">
+        <div>
+          <h3 class="custom__title">Нестандартная задача?</h3>
+          <p class="custom__text">Расскажите, что нужно. Обсудим задачу и честно скажу, смогу ли помочь.</p>
+        </div>
+        <a class="ui-btn custom__cta" href="https://t.me/afkfishka" target="_blank" rel="noopener noreferrer">Описать задачу <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--line" id="process" aria-labelledby="process-title">
+    <div class="ui-wrap">
+      <div class="section-head">
+        <div class="section-head__meta"><p class="ui-label">03 — Процесс</p></div>
+        <div class="section-head__title"><h2 class="ui-h2" id="process-title">Сначала задача.<br>Потом решение.</h2></div>
+      </div>
+      <div class="steps">
+        <article class="step"><span class="step__no">01 / разговор</span><h3 class="step__title">Разбираемся, что нужно</h3><p class="step__desc">Вы рассказываете о задаче и о том, что сейчас мешает получать обращения.</p></article>
+        <article class="step"><span class="step__no">02 / план</span><h3 class="step__title">Фиксируем объём</h3><p class="step__desc">Согласуем состав работ и стоимость до начала разработки.</p></article>
+        <article class="step"><span class="step__no">03 / работа</span><h3 class="step__title">Делаю и показываю</h3><p class="step__desc">Вы смотрите промежуточный результат и даёте обратную связь по согласованному объёму.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-title">
+    <div class="ui-wrap contact__grid">
+      <div>
+        <p class="ui-label">Есть задача для сайта или бота?</p>
+        <h2 class="contact__title" id="contact-title">Начнём <em>с разговора.</em></h2>
+        <p class="contact__text">Напишите напрямую — обсудим, какой формат подойдёт и смогу ли я взяться за задачу.</p>
+      </div>
+      <div class="contact__action">
+        <a class="ui-btn" href="https://t.me/afkfishka" target="_blank" rel="noopener noreferrer">Написать Игорю ↗</a>
+        <p class="contact__hint">TELEGRAM · @AFKFISHKA</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="ui-wrap site-foot__inner">
+    <span>Игорь · сайты и Telegram-боты</span>
+    <span>Работаю по всей России</span>
+    <a href="https://t.me/afkfishka" target="_blank" rel="noopener noreferrer">@afkfishka ↗</a>
+  </div>
+</footer>
+
+<script src="assets/base.js"></script>
+</body>
+</html>
